@@ -1,0 +1,47 @@
+{% extends "base.html.j2" %}
+{% block head %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/locale/fr.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+{% endblock %}
+{% block content %}
+  <div class="row" style="height: calc(100vh - 100px); overflow: scroll">
+    <table class="table table-sm">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Reading (KWh)</th>
+          <th>Consumption (KWh / day)</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <form action="{{ url_for('mrs') }}" method="POST">
+            <th>
+              <input class="form-control" id="date" name="date" type="date" placeholder="Date">
+            </th>
+            <th><input class="form-control" id="value" name="value" type="text" placeholder="Value"></th>
+            <th></th>
+            <th><button class="btn btn-primary btn-sm" type="submit">Submit</button></th>
+          </form>
+        </tr>
+
+        {% for mr in mrs %}
+          <tr>
+            <th>{{mr.date}}</th>
+            <th>{{mr.value}}</th>
+            <th>{{mr.mean_consumption_per_day}}</th>
+            <th><a class="btn btn-danger btn-sm" href="{{ url_for('delete_mr', id=mr.id) }}">X</a></th>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="row">
+    <caption>Mean : {{mean}} KWh / day</caption>
+  </div>
+  <script>
+    document.getElementById('date').valueAsDate = new Date();
+  </script>
+{% endblock %}

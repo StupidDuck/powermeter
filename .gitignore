@@ -1,0 +1,4 @@
+.env
+irs.db
+irs_dev.db
+__pycache__
