@@ -1,12 +1,11 @@
-from core.models.MeterReading import MeterReading
-from core.data_access.MeterReadingDataAccess import MeterReadingDataAccess
+from core.data_access.JournalDataAccess import JournalDataAccess
 from datetime import date, datetime, timedelta
 
 
-class MeterReadings:
+class Journal:
 
     def __init__(self):
-        self._mrs = MeterReadingDataAccess.find_all()
+        self._mrs = JournalDataAccess.find_all()
 
         for idx, val in enumerate(self._mrs):
             if idx > 0:
@@ -31,25 +30,12 @@ class MeterReadings:
             yield self._mrs[i]
             i += 1
 
-    #TO BE DEPRECATED
-    def get_all(self):
-        self._mrs = MeterReadingDataAccess.find_all()
-
-        for idx, val in enumerate(self._mrs):
-            if idx > 0:
-                val.consumption = val.value - prev_value
-                val.days = (datetime.strptime(val.date, '%Y-%m-%d').date() - prev_date).days
-            else:
-                val.consumption = 0.0
-                val.days = 0
-            prev_value = val.value
-            prev_date = datetime.strptime(val.date, '%Y-%m-%d').date()
-
-        return self._mrs
-
     @property
     def mean(self):
-        mean = sum([mr.mean_consumption_per_day for mr in self._mrs[1:]]) / (len(self._mrs) - 1)
+        if len(self._mrs) > 0:
+            mean = sum([mr.mean_consumption_per_day for mr in self._mrs[1:]]) / (len(self._mrs) - 1)
+        else:
+            mean = 0
         return float("{0:.2f}".format(mean))
 
     def trend_last_days(self, nbr_days):

@@ -1,4 +1,8 @@
 .env
+Pipfile.lock
 irs.db
 irs_dev.db
 __pycache__
+core/__pycache__
+core/data_access/__pycache__
+core/models/__pycache__

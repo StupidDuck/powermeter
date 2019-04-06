@@ -17,7 +17,7 @@
       </thead>
       <tbody>
         <tr>
-          <form action="{{ url_for('mrs') }}" method="POST">
+          <form action="{{ url_for('journal') }}" method="POST">
             <th>
               <input class="form-control" id="date" name="date" type="date" placeholder="Date">
             </th>
@@ -27,7 +27,7 @@
           </form>
         </tr>
 
-        {% for mr in mrs %}
+        {% for mr in journal %}
           <tr>
             <th>{{mr.date}}</th>
             <th>{{mr.value}}</th>

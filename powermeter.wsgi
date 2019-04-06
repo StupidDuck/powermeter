@@ -9,7 +9,9 @@ os.chdir('/home/pi/public_html/powermeter')
 from dotenv import load_dotenv
 load_dotenv()
 
-#replace dev => prod
+# Prepare production ENV
 os.environ['FLASK_ENV'] = 'production'
+import random
+os.environ['SECRET_KEY'] = random.getrandbits(128)
 
 from main import app as application

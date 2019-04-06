@@ -1,11 +1,10 @@
 import os
+from flask import Flask, request, redirect, url_for, render_template, flash, session, jsonify
+from core.models.Journal import Journal
 from core.models.MeterReading import MeterReading
-from core.models.MeterReadings import MeterReadings
-from user import User
 from functools import wraps
 from datetime import datetime, date, timedelta
 from urllib.parse import urlencode
-from flask import Flask, request, redirect, url_for, render_template, flash, session, jsonify
 from authlib.flask.client import OAuth
 
 app = Flask(__name__)
@@ -28,7 +27,6 @@ def requires_auth(f):
   @wraps(f)
   def decorated(*args, **kwargs):
     if 'profile' not in session:
-      # Redirect to Login page here
       return redirect(url_for('login'))
     return f(*args, **kwargs)
 
@@ -37,19 +35,26 @@ def requires_auth(f):
 @app.route('/')
 @requires_auth
 def index():
-    mrs = MeterReadings()
+    journal = Journal()
     days = 7
-    trend = mrs.trend_last_days(days)
-    mean = mrs.mean
+    trend = journal.trend_last_days(days)
+    mean = journal.mean
     return render_template('index.html.j2', title='Powermeter', mean=mean, trend=trend, days=days)
 
 @app.route('/login')
 def login():
+    if os.environ['FLASK_ENV'] == 'dev':
+        session['profile'] = {
+            'name': 'DEV'
+        }
+        return redirect(url_for('index'))
     return auth0.authorize_redirect(redirect_uri="{}{}".format(request.url_root[0:-1], url_for('authorize')), audience='https://asgaror.eu.auth0.com/userinfo')
 
 @app.route('/logout')
 def logout():
     session.clear()
+    if os.environ['FLASK_ENV'] == 'dev':
+        return redirect(url_for('login'))
     params = {'returnTo': url_for('index', _external=True), 'client_id': os.environ['AUTH0_CLIENT_ID']}
     return redirect(auth0.api_base_url + '/v2/logout?' + urlencode(params))
 
@@ -69,30 +74,27 @@ def authorize():
     }
     return redirect(url_for('index'))
 
-@app.route('/mrs', methods=['GET', 'POST'])
+@app.route('/journal', methods=['GET', 'POST'])
 @requires_auth
-def mrs():
+def journal():
     if (request.method == 'POST'):
         _date = request.form.get('date')
         _value = float(request.form.get('value'))
         try:
-            MeterReading(_date, _value).create()
+            MeterReading(_date, _value).save()
         except (TypeError, ValueError) as e:
             flash(e)
 
-    mrs = MeterReadings()
-    if len(mrs) > 1:
-        mean = float("{0:.2f}".format(sum([mr.mean_consumption_per_day for mr in mrs[1:]]) / (len(mrs) - 1)))
-    else:
-        mean = 0.0
+    journal = Journal()
+    mean = journal.mean
 
-    return render_template('mrs.html.j2', title='Meter Readings',
-                            mrs=mrs, mean=mean)
+    return render_template('journal.html.j2', title='Meter Readings',
+                            journal=journal, mean=mean)
 
-@app.route('/mrs/chart_data')
+@app.route('/journal/chart_data')
 @requires_auth
 def get_chart_data():
-    mrs = MeterReadings()
+    journal = Journal()
 
     chart_data = {
         'y_min': 0.0,
@@ -101,16 +103,14 @@ def get_chart_data():
         'values': []
     }
 
-    try:
-        for mr in mrs[1:]:
-            chart_data['labels'].append(mr.date)
-            chart_data['values'].append(mr.mean_consumption_per_day)
+    for mr in journal[1:]:
+        chart_data['labels'].append(mr.date)
+        chart_data['values'].append(mr.mean_consumption_per_day)
 
-        mean = float("{0:.2f}".format(sum([mr.mean_consumption_per_day for mr in mrs[1:]]) / (len(mrs) - 1)))
-        chart_max = max([mr.mean_consumption_per_day for mr in mrs])
-        chart_data['y_max'] = chart_max + chart_max / 5
-    except (ZeroDivisionError, IndexError):
-        mean = 0.0
+    mean = journal.mean
+    chart_max = max([mr.mean_consumption_per_day for mr in journal])
+    chart_data['y_max'] = chart_max + chart_max / 5
+
     return jsonify({
         'values': chart_data['values'],
         'mean': mean,
@@ -122,5 +122,5 @@ def get_chart_data():
 @app.route('/mr/<int:id>/delete')
 @requires_auth
 def delete_mr(id):
-    MeterReading.get_by_id(id).delete()
-    return redirect(url_for('mrs'))
+    MeterReading.find(id).delete()
+    return redirect(url_for('journal'))

@@ -65,6 +65,6 @@ function fetchData() {
       }
   };
 
-  req.open('GET', 'mrs/chart_data', true);
+  req.open('GET', 'journal/chart_data', true);
   req.send(null);
 }

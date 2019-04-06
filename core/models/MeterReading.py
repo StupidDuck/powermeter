@@ -13,17 +13,14 @@ class MeterReading:
         return "date: {}, value : {}, days : {}, mean_consumption_per_day : {}".format(self.date, self.value, self.days, self.mean_consumption_per_day)
 
     @staticmethod
-    def get_by_id(id):
-        mr = MeterReadingDataAccess.find_by_id(id)
-        if len(mr) > 0:
-            return mr[0]
-        return None
+    def find(id):
+        return MeterReadingDataAccess.find_by_id(id)
 
-    def create(self):
-        MeterReadingDataAccess.insert([self])
+    def save(self):
+        MeterReadingDataAccess.insert(self)
 
     def delete(self):
-        MeterReadingDataAccess.delete([self])
+        MeterReadingDataAccess.delete(self)
 
     @property
     def mean_consumption_per_day(self):
