@@ -8,6 +8,6 @@ authors = ["Gilles Lescot <lescotg@hotmail.com>"]
 python = "3.5.3"
 flask = "*"
 authlib = "*"
+python-dotenv = "^0.10.1"
 
 [tool.poetry.dev-dependencies]
-python-dotenv = "^0.10.1"
