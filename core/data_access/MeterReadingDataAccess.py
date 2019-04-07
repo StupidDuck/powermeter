@@ -1,25 +1,23 @@
 import core.models
-from core.data_access.DB import DB
+from core.data_access.DB import conn
 
 
 class MeterReadingDataAccess:
 
     @classmethod
     def find_by_id(cls, id):
-        with DB() as db:
-            records = db.query("SELECT date, value, id FROM indexes WHERE id = ?", (id,))
-
-        if len(records) == 1:
-            return core.models.MeterReading.MeterReading(records[0][0], records[0][1], records[0][2])
-        else:
-            return None
+        with conn:
+            stmt = db.execute("SELECT date, value, id FROM indexes WHERE id = ?", (id,))
+            record = stmt.fetchone()
+        return core.models.MeterReading.MeterReading(record[0], record[1], record[2])
 
     @classmethod
     def insert(cls, meter_reading):
-        with DB() as db:
-            db.query("INSERT INTO indexes (date, value) VALUES (?, ?)", (meter_reading.date, meter_reading.value))
+        with conn:
+            cursor = conn.execute("INSERT INTO indexes (date, value) VALUES (?, ?)", (meter_reading.date, meter_reading.value))
+            return cursor.lastrowid
 
     @classmethod
     def delete(cls, meter_reading):
-        with DB() as db:
-            db.query("DELETE FROM indexes WHERE id = ?", (meter_reading.id,))
+        with conn:
+            conn.execute("DELETE FROM indexes WHERE id = ?", (meter_reading.id,))

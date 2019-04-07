@@ -17,7 +17,7 @@ class MeterReading:
         return MeterReadingDataAccess.find_by_id(id)
 
     def save(self):
-        MeterReadingDataAccess.insert(self)
+        self.id = MeterReadingDataAccess.insert(self)
 
     def delete(self):
         MeterReadingDataAccess.delete(self)
