@@ -7,7 +7,7 @@ class MeterReadingDataAccess:
     @classmethod
     def find_by_id(cls, id):
         with conn:
-            stmt = db.execute("SELECT date, value, id FROM indexes WHERE id = ?", (id,))
+            stmt = conn.execute("SELECT date, value, id FROM indexes WHERE id = ?", (id,))
             record = stmt.fetchone()
         return core.models.MeterReading.MeterReading(record[0], record[1], record[2])
 

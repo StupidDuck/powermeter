@@ -1,0 +1,13 @@
+[tool.poetry]
+name = "powermeter"
+version = "0.1.0"
+description = ""
+authors = ["Gilles Lescot <lescotg@hotmail.com>"]
+
+[tool.poetry.dependencies]
+python = "3.5.3"
+flask = "*"
+authlib = "*"
+
+[tool.poetry.dev-dependencies]
+python-dotenv = "^0.10.1"

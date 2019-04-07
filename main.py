@@ -7,6 +7,9 @@ from datetime import datetime, date, timedelta
 from urllib.parse import urlencode
 from authlib.flask.client import OAuth
 
+from dotenv import load_dotenv
+load_dotenv()
+
 app = Flask(__name__)
 oauth = OAuth(app)
 

@@ -9,6 +9,8 @@ os.chdir('/home/pi/public_html/powermeter')
 from dotenv import load_dotenv
 load_dotenv()
 
+#TODO : automatiser l'installation de nouvelles llib / update du fichier Pipenv
+
 # Prepare production ENV
 os.environ['FLASK_ENV'] = 'production'
 import random
