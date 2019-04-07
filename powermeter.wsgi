@@ -12,6 +12,6 @@ load_dotenv()
 # Prepare production ENV
 os.environ['FLASK_ENV'] = 'production'
 import random
-os.environ['SECRET_KEY'] = random.getrandbits(128)
+os.environ['SECRET_KEY'] = "{}".format(random.getrandbits(128))
 
 from main import app as application
