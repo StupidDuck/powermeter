@@ -35,6 +35,12 @@ def requires_auth(f):
 
   return decorated
 
+@app.route('/test')
+def test():
+    print(url_for('login'))
+    print(request.url_root)
+    print(request)
+
 @app.route('/')
 @requires_auth
 def index():
@@ -51,7 +57,7 @@ def login():
             'name': 'DEV'
         }
         return redirect(url_for('index'))
-    return auth0.authorize_redirect(redirect_uri="{}{}".format(request.url_root[0:-1], url_for('authorize')), audience='https://asgaror.eu.auth0.com/userinfo')
+    return auth0.authorize_redirect(redirect_uri="{}{}".format(request.url_root[0:-1], '/authorize'), audience='https://asgaror.eu.auth0.com/userinfo')
 
 @app.route('/logout')
 def logout():
