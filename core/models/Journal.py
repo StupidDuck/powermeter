@@ -65,7 +65,7 @@ class Journal:
             return 0.0
         trend_last_days = float("{0:.2f}".format(mean_last_days / global_mean))
 
-        return "{} %".format(-1 * (100 - (trend_last_days * 100)))
+        return "{0:.2f} %".format(-1 * (100 - (trend_last_days * 100)))
 
     def export_csv(self):
         path = "export.csv"
