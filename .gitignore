@@ -1,5 +1,6 @@
 .env
-irs.db
-irs_dev.db
+.venv/
 __pycache__/
 *.py[cod]
+*.csv
+*.db

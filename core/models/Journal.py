@@ -1,11 +1,11 @@
-from core.data_access.JournalDataAccess import JournalDataAccess
-from datetime import date, datetime, timedelta
+from datetime import datetime
+from core.data_access import journal_dao
 
 
 class Journal:
 
     def __init__(self):
-        self._mrs = JournalDataAccess.find_all()
+        self._mrs = journal_dao.find_all()
 
         for idx, val in enumerate(self._mrs):
             if idx > 0:
@@ -62,3 +62,10 @@ class Journal:
         trend_last_days = float("{0:.2f}".format(mean_last_days / global_mean))
 
         return "{} %".format(-1 * (100 - (trend_last_days * 100)))
+
+    def export_csv(self):
+        path = "export.csv"
+        with open(path, mode="w", encoding="UTF-8") as file:
+            for mr in self._mrs:
+                file.write("{},{}\n".format(mr.date, mr.value))
+        return path

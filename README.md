@@ -4,5 +4,5 @@ Small script to keep track of electric consumption
 
 Installation :
 
-"pipenv install"
-"pipenv run flask run"
+"poetry install"
+"poetry run flask run"

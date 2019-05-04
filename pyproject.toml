@@ -11,3 +11,4 @@ authlib = "*"
 python-dotenv = "^0.10.1"
 
 [tool.poetry.dev-dependencies]
+pylint = "^2.3"

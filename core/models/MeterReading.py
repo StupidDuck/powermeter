@@ -1,26 +1,29 @@
-from core.data_access.MeterReadingDataAccess import MeterReadingDataAccess
-
+from datetime import datetime
+from core.data_access import meter_reading_dao
 
 class MeterReading:
 
-    def __init__(self, date, value, id=None):
+    def __init__(self, date, value, mr_id=None):
         self.check_date_format(date)
-        self.id = id
+        self._id = mr_id
         self.date = date
         self.value = value
+        self.days = 0
+        self.consumption = 0
 
     def __str__(self):
-        return "date: {}, value : {}, days : {}, mean_consumption_per_day : {}".format(self.date, self.value, self.days, self.mean_consumption_per_day)
+        return "date: {}, value : {}, days : {}, mean_consumption_per_day : {}".format(
+            self.date, self.value, self.days, self.mean_consumption_per_day)
 
     @staticmethod
-    def find(id):
-        return MeterReadingDataAccess.find_by_id(id)
+    def find(mr_id):
+        return meter_reading_dao.find_by_id(mr_id)
 
     def save(self):
-        self.id = MeterReadingDataAccess.insert(self)
+        self._id = meter_reading_dao.insert(self)
 
     def delete(self):
-        MeterReadingDataAccess.delete(self)
+        meter_reading_dao.delete(self)
 
     @property
     def mean_consumption_per_day(self):
@@ -34,7 +37,7 @@ class MeterReading:
     def check_date_format(date):
         if not isinstance(date, str):
             raise TypeError('The date must be a string like YYYY-MM-DD')
-            try:
-                datetime.strptime(date, '%Y-%m-%d').date()
-            except ValueError:
-                raise ValueError('The date must be a string like YYYY-MM-DD')
+        try:
+            datetime.strptime(date, '%Y-%m-%d').date()
+        except ValueError:
+            raise ValueError('The date must be a string like YYYY-MM-DD')
