@@ -41,9 +41,6 @@ class Journal:
         return float("{0:.2f}".format(mean))
 
     def trend_last_days(self, nbr_days):
-        if len(self._mrs) <= 1 or nbr_days == 0:
-            return 0.0
-
         cpt_days = 0
         value = 0
         remaining_days = nbr_days
@@ -59,9 +56,12 @@ class Journal:
             if remaining_days <= 0:
                 break
 
-        mean_last_days = value / nbr_days
-        global_mean = sum([mr.mean_consumption_per_day for mr in self._mrs[1:]]) / (len(self._mrs) - 1)
-        trend_last_days = float("{0:.2f}".format(mean_last_days / global_mean))
+        try:
+            mean_last_days = value / nbr_days
+            global_mean = sum([mr.mean_consumption_per_day for mr in self._mrs[1:]]) / (len(self._mrs) - 1)
+            trend_last_days = float("{0:.2f}".format(mean_last_days / global_mean))
+        except ZeroDivisionError:
+            return "0 %"
 
         return "{0:.2f} %".format(-1 * (100 - (trend_last_days * 100)))
 
@@ -75,7 +75,6 @@ class Journal:
     def import_csv(self, file):
         line = file.readline().decode("utf-8")
         while line:
-            print(line)
             line_list = line.split(',')
             value = line_list[1]
             date = line_list[0]
