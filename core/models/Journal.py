@@ -75,8 +75,9 @@ class Journal:
     def import_csv(self, file):
         line = file.readline().decode("utf-8")
         while line:
+            print(line)
             line_list = line.split(',')
             value = line_list[1]
             date = line_list[0]
             meter_reading_dao.insert(core.models.MeterReading(date, value))
-            line = file.readline()
+            line = file.readline().decode("utf-8")
