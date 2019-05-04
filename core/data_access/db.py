@@ -6,7 +6,7 @@ DATABASE_URL = os.environ['DATABASE_URL']
 
 @contextmanager
 def get_cursor():
-    connection = psycopg2.connect(psycopg2.connect(DATABASE_URL, sslmode='require'))
+    connection = psycopg2.connect(DATABASE_URL, sslmode='require')
     yield connection.cursor()
     connection.close()
 
