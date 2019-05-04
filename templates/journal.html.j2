@@ -27,7 +27,7 @@
             <th>{{mr.date}}</th>
             <th>{{mr.value}}</th>
             <th>{{mr.mean_consumption_per_day}}</th>
-            <th><a class="btn btn-danger btn-sm" href="{{ url_for('delete_mr', id=mr.id) }}">X</a></th>
+            <th><a class="btn btn-danger btn-sm" href="{{ url_for('delete_mr', id=mr._id) }}">X</a></th>
           </tr>
         {% endfor %}
       </tbody>
