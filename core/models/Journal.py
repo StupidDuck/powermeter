@@ -34,11 +34,12 @@ class Journal:
 
     @property
     def mean(self):
-        if len(self._mrs) > 0:
+        try:
             mean = sum([mr.mean_consumption_per_day for mr in self._mrs[1:]]) / (len(self._mrs) - 1)
-        else:
+        except ZeroDivisionError:
             mean = 0
-        return float("{0:.2f}".format(mean))
+        finally:
+            return float("{0:.2f}".format(mean))
 
     def trend_last_days(self, nbr_days):
         cpt_days = 0
@@ -61,9 +62,9 @@ class Journal:
             global_mean = sum([mr.mean_consumption_per_day for mr in self._mrs[1:]]) / (len(self._mrs) - 1)
             trend_last_days = float("{0:.2f}".format(mean_last_days / global_mean))
         except ZeroDivisionError:
-            return "0 %"
-
-        return "{0:.2f} %".format(-1 * (100 - (trend_last_days * 100)))
+            trend_last_days = 0
+        finally:
+            return "{0:.2f} %".format(-1 * (100 - (trend_last_days * 100)))
 
     def export_csv(self):
         path = "export.csv"

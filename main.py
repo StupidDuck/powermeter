@@ -161,6 +161,6 @@ def import_csv():
 
 @app.route('/mr/<int:id>/delete')
 @requires_auth
-def delete_mr(mr_id):
-    MeterReading.find(mr_id).delete()
+def delete_mr(id):
+    MeterReading.find(id).delete()
     return redirect(url_for('journal'))
