@@ -9,6 +9,6 @@ python = "3.5.3"
 flask = "*"
 authlib = "*"
 python-dotenv = "^0.10.1"
+psycopg2-binary = "*"
 
 [tool.poetry.dev-dependencies]
-pylint = "^2.3"

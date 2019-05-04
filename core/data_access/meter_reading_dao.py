@@ -1,5 +1,5 @@
 import core.models
-from core.data_access.db import get_db
+from core.data_access.db import get_cursor as get_db
 
 
 def find_by_id(mr_id):
@@ -10,9 +10,9 @@ def find_by_id(mr_id):
 
 def insert(meter_reading):
     with get_db() as db:
-        cursor = db.execute("INSERT INTO indexes (date, value) VALUES (?, ?)",
-                            (meter_reading.date, meter_reading.value))
-        return cursor.lastrowid
+        db.execute("INSERT INTO indexes (date, value) VALUES (?, ?) RETURNING id",
+                    (meter_reading.date, meter_reading.value))
+        return db.fetchone()[0]
 
 def delete(meter_reading):
     with get_db() as db:

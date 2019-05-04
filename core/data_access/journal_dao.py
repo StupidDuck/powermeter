@@ -1,5 +1,5 @@
 import core.models
-from core.data_access.db import get_db
+from core.data_access.db import get_cursor as get_db
 
 
 def find_all():
