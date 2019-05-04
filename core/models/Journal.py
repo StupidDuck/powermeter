@@ -1,5 +1,7 @@
 from datetime import datetime
+import core.models
 from core.data_access import journal_dao
+from core.data_access import meter_reading_dao
 
 
 class Journal:
@@ -71,3 +73,12 @@ class Journal:
             for mr in self._mrs:
                 file.write("{},{}\n".format(mr.date, mr.value))
         return path
+
+    def import_csv(self, file):
+        line = file.readline()
+        while line:
+            line_list = line.split(b',')
+            value = line_list[1].decode("utf-8")
+            date = line_list[0].decode("utf-8")
+            meter_reading_dao.insert(core.models.MeterReading(date, value))
+            line = file.readline()

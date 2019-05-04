@@ -134,16 +134,31 @@ def get_chart_data():
         'y_min': chart_data['y_min'],
         'y_max': chart_data['y_max'],
     })
+
 @app.route('/journal/export')
 @requires_auth
-def export():
+def export_csv():
     journal_obj = Journal()
-    path = journal_obj.export_csv()
-    return send_file(path,
+    filename = journal_obj.export_csv()
+    return send_file(filename,
                      mimetype="text/csv",
                      as_attachment=True,
                      attachment_filename="export.csv")
-    
+
+@app.route('/journal/import', methods=['POST'])
+@requires_auth
+def import_csv():
+    if 'file' not in request.files:
+        flash('No file selected')
+        return redirect(url_for('journal'))
+    file = request.files['file']
+    if file.filename == '':
+        flash('No file selected')
+        return redirect(url_for('journal'))
+    journal_obj = Journal()
+    journal_obj.import_csv(file)
+    return redirect(url_for('journal'))
+
 @app.route('/mr/<int:id>/delete')
 @requires_auth
 def delete_mr(mr_id):
