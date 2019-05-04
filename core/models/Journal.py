@@ -12,12 +12,12 @@ class Journal:
         for idx, val in enumerate(self._mrs):
             if idx > 0:
                 val.consumption = val.value - prev_value
-                val.days = (datetime.strptime(val.date, '%Y-%m-%d').date() - prev_date).days
+                val.days = (val.date - prev_date).days
             else:
                 val.consumption = 0.0
                 val.days = 0
             prev_value = val.value
-            prev_date = datetime.strptime(val.date, '%Y-%m-%d').date()
+            prev_date = val.date
 
     def __len__(self):
         return len(self._mrs)
@@ -61,8 +61,6 @@ class Journal:
 
         mean_last_days = value / nbr_days
         global_mean = sum([mr.mean_consumption_per_day for mr in self._mrs[1:]]) / (len(self._mrs) - 1)
-        if global_mean == 0.0:
-            return 0.0
         trend_last_days = float("{0:.2f}".format(mean_last_days / global_mean))
 
         return "{0:.2f} %".format(-1 * (100 - (trend_last_days * 100)))
@@ -75,10 +73,10 @@ class Journal:
         return path
 
     def import_csv(self, file):
-        line = file.readline()
+        line = file.readline().decode("utf-8")
         while line:
-            line_list = line.split(b',')
-            value = line_list[1].decode("utf-8")
-            date = line_list[0].decode("utf-8")
+            line_list = line.split(',')
+            value = line_list[1]
+            date = line_list[0]
             meter_reading_dao.insert(core.models.MeterReading(date, value))
             line = file.readline()

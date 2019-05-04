@@ -4,7 +4,6 @@ from core.data_access import meter_reading_dao
 class MeterReading:
 
     def __init__(self, date, value, mr_id=None):
-        self.check_date_format(date)
         self._id = mr_id
         self.date = date
         self.value = value
@@ -32,12 +31,3 @@ class MeterReading:
             mean = self.consumption / self.days
 
         return float("{0:.2f}".format(mean))
-
-    @staticmethod
-    def check_date_format(date):
-        if not isinstance(date, str):
-            raise TypeError('The date must be a string like YYYY-MM-DD')
-        try:
-            datetime.strptime(date, '%Y-%m-%d').date()
-        except ValueError:
-            raise ValueError('The date must be a string like YYYY-MM-DD')

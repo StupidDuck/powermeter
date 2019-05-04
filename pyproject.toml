@@ -5,10 +5,10 @@ description = ""
 authors = ["Gilles Lescot <lescotg@hotmail.com>"]
 
 [tool.poetry.dependencies]
-python = "3.5.3"
+python = "^3.6.8"
 flask = "*"
 authlib = "*"
 python-dotenv = "^0.10.1"
-psycopg2-binary = "*"
+psycopg2-binary = "^2.8.2"
 
 [tool.poetry.dev-dependencies]
