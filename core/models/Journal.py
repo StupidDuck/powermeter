@@ -39,7 +39,7 @@ class Journal:
         return float("{0:.2f}".format(mean))
 
     def trend_last_days(self, nbr_days):
-        if nbr_days == 0:
+        if len(self._mrs) <= 1 or nbr_days == 0:
             return 0.0
 
         cpt_days = 0
@@ -59,6 +59,8 @@ class Journal:
 
         mean_last_days = value / nbr_days
         global_mean = sum([mr.mean_consumption_per_day for mr in self._mrs[1:]]) / (len(self._mrs) - 1)
+        if global_mean == 0.0:
+            return 0.0
         trend_last_days = float("{0:.2f}".format(mean_last_days / global_mean))
 
         return "{} %".format(-1 * (100 - (trend_last_days * 100)))
