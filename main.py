@@ -29,6 +29,7 @@ auth0 = oauth.register(
 )
 app.secret_key = os.environ['SECRET_KEY']
 
+
 def requires_auth(f):
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -38,11 +39,13 @@ def requires_auth(f):
 
     return decorated
 
+
 @app.route('/test')
 def test():
     print(url_for('login'))
     print(request.url_root)
     print(request)
+
 
 @app.route('/')
 @requires_auth
@@ -53,6 +56,7 @@ def index():
     trend = journal_obj.trend_last_days(days)
     mean = journal_obj.mean
     return render_template('index.html.j2', title='Powermeter', mean=mean, trend=trend, days=days)
+
 
 @app.route('/login')
 def login():
@@ -65,6 +69,7 @@ def login():
         redirect_uri="{}{}".format(request.url_root[0:-1], '/authorize'),
         audience='https://asgaror.eu.auth0.com/userinfo')
 
+
 @app.route('/logout')
 def logout():
     session.clear()
@@ -73,6 +78,7 @@ def logout():
     params = {'returnTo': url_for('index', _external=True),
               'client_id': os.environ['AUTH0_CLIENT_ID']}
     return redirect(auth0.api_base_url + '/v2/logout?' + urlencode(params))
+
 
 @app.route('/authorize')
 def authorize():
@@ -90,6 +96,7 @@ def authorize():
     }
     return redirect(url_for('index'))
 
+
 @app.route('/journal', methods=['GET', 'POST'])
 @requires_auth
 def journal():
@@ -105,7 +112,7 @@ def journal():
     mean = journal_obj.mean
 
     return render_template('journal.html.j2', title='Meter Readings',
-                           journal=journal_obj, mean=mean)
+                           journal=reversed(journal_obj), mean=mean)
 
 @app.route('/journal/chart_data')
 @requires_auth
@@ -135,6 +142,7 @@ def get_chart_data():
         'y_max': chart_data['y_max'],
     })
 
+
 @app.route('/journal/export')
 @requires_auth
 def export_csv():
@@ -144,6 +152,7 @@ def export_csv():
                      mimetype="text/csv",
                      as_attachment=True,
                      attachment_filename="export.csv")
+
 
 @app.route('/journal/import', methods=['POST'])
 @requires_auth
@@ -158,6 +167,7 @@ def import_csv():
     journal_obj = Journal()
     journal_obj.import_csv(file)
     return redirect(url_for('journal'))
+
 
 @app.route('/mr/<int:id>/delete')
 @requires_auth

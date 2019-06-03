@@ -62,7 +62,7 @@ class Journal:
             global_mean = sum([mr.mean_consumption_per_day for mr in self._mrs[1:]]) / (len(self._mrs) - 1)
             trend_last_days = float("{0:.2f}".format(mean_last_days / global_mean))
         except ZeroDivisionError:
-            trend_last_days = 0
+            trend_last_days = 1
         finally:
             return "{0:.2f} %".format(-1 * (100 - (trend_last_days * 100)))
 

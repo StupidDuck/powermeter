@@ -10,6 +10,8 @@ data :{
 
 fetchData();
 
+//puduku => Promise !
+
 var ctx = document.getElementById("myChart");
 
 function buildChart(data) {
@@ -20,6 +22,7 @@ function buildChart(data) {
         datasets: [{
           label: 'Power Consumption',
           data: data.values,
+          backgroundColor: data.values.map((val, i) => palette(i))
         }]
       },
       options: {
@@ -46,7 +49,7 @@ function buildChart(data) {
             }
           }]
         }
-      }
+      },
   });
 }
 
@@ -57,7 +60,6 @@ function fetchData() {
       // XMLHttpRequest.DONE === 4
       if (this.readyState === XMLHttpRequest.DONE) {
           if (this.status === 200) {
-            console.log
               buildChart(JSON.parse(this.responseText));
           } else {
               console.log("Status de la réponse: %d (%s)", this.status, this.statusText);
@@ -67,4 +69,11 @@ function fetchData() {
 
   req.open('GET', 'journal/chart_data', true);
   req.send(null);
+}
+
+function palette(i) {
+  let colors = ["#04151f", "#183a37", "#efd6ac", "#c44900", "#432534"];
+  const transparency = "FF"
+  const index = i % colors.length;
+  return colors[index];
 }
