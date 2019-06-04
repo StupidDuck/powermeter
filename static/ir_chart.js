@@ -26,6 +26,11 @@ function buildChart(data) {
         }]
       },
       options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: {
+            display: false,
+        },
         scales: {
           xAxes: [{
             type: 'time',

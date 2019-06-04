@@ -52,7 +52,7 @@ def test():
 def index():
     # TO_DO : include mean and trends on js chart ?
     journal_obj = Journal()
-    days = 7
+    days = 15
     trend = journal_obj.trend_last_days(days)
     mean = journal_obj.mean
     return render_template('index.html.j2', title='Powermeter', mean=mean, trend=trend, days=days)
@@ -105,6 +105,7 @@ def journal():
         _value = float(request.form.get('value'))
         try:
             MeterReading(_date, _value).save()
+            return redirect(url_for('index'))
         except (TypeError, ValueError) as err:
             flash(err)
 

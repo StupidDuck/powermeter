@@ -1,0 +1,43 @@
+:root {
+  --color-primary: #00131f;
+  --color-secondary: #c44900;
+  --color-text: #efd6ac;
+}
+
+body {
+  color: var(--color-primary);
+}
+
+.full-height {
+  height: calc(100vh - 56px - 8px);
+}
+
+.navbar {
+  margin-bottom: 8px;
+}
+
+.navbar-dark .navbar-nav .nav-link,
+.navbar-dark .navbar-text {
+  color: var(--color-text);
+}
+
+.bg-dark {
+  background-color: var(--color-primary) !important;
+}
+
+.bg-dark .navbar-brand {
+  background-color: var(--color-primary);
+  color: var(--color-text);
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-text);
+}
+
+.btn-primary:hover {
+  background-color: var(--color-secondary);
+  border-color: var(--color-secondary);
+  color: var(--color-primary);
+}
