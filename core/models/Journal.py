@@ -6,8 +6,8 @@ from core.data_access import meter_reading_dao
 
 class Journal:
 
-    def __init__(self):
-        self._mrs = journal_dao.find_all()
+    def __init__(self, meter_id):
+        self._mrs = journal_dao.find_all(meter_id)
 
         for idx, val in enumerate(self._mrs):
             if idx > 0:

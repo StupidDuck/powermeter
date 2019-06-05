@@ -9,7 +9,7 @@ from functools import wraps
 from authlib.flask.client import OAuth
 from dotenv import load_dotenv
 from flask import Flask, request, redirect, url_for, render_template, flash, session, jsonify, send_file
-from core.models import Journal, MeterReading
+from core.models import Meter, Journal, MeterReading
 
 load_dotenv()
 
@@ -95,6 +95,20 @@ def authorize():
     }
     return redirect(url_for('index'))
 
+@app.route('/meter', methods=['POST'])
+@app.route('/meter/<int:id>')
+@requires_auth
+def meter(id=None):
+    if request.method == 'POST':
+        _name = request.form.get('name')
+        try:
+            Meter(session['profile']['name'], _name).save()
+            return redirect(url_for('index'))
+        except (TypeError, ValueError) as err:
+            flash(err)
+    else:
+        pass
+
 
 @app.route('/journal', methods=['GET', 'POST'])
 @requires_auth
@@ -113,6 +127,7 @@ def journal():
 
     return render_template('journal.html.j2', title='Meter Readings',
                            journal=reversed(journal_obj), mean=mean)
+
 
 @app.route('/journal/chart_data')
 @requires_auth
