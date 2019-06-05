@@ -1,7 +1,7 @@
 {% extends "base.html.j2" %}
 {% block content %}
   <!-- Upload .csv -->
-  <form action="{{ url_for('import_csv') }}" enctype="multipart/form-data" method="POST">
+  <form action="{{ url_for('import_csv', meter_id=meter_id) }}" enctype="multipart/form-data" method="POST">
     <input name="file" type="file" accept="text/csv">
     <input type="submit" value="Import">
   </form>
@@ -18,7 +18,7 @@
       </thead>
       <tbody>
         <tr>
-          <form action="{{ url_for('journal') }}" method="POST">
+          <form action="{{ url_for('post_journal', meter_id=meter_id) }}" method="POST">
             <th>
               <input class="form-control" id="date" name="date" type="date" placeholder="Date">
             </th>
@@ -28,7 +28,7 @@
           </form>
         </tr>
 
-        {% for mr in journal %}
+        {% for mr in journal_obj %}
           <tr>
             <th>{{mr.date}}</th>
             <th>{{mr.value}}</th>

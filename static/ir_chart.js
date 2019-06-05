@@ -1,17 +1,3 @@
-/*
-data :{
-  mean,
-  y_min,
-  y_max,
-  lables,
-  values
-}
-*/
-
-fetchData();
-
-//puduku => Promise !
-
 var ctx = document.getElementById("myChart");
 
 function buildChart(data) {
@@ -58,22 +44,22 @@ function buildChart(data) {
   });
 }
 
-function fetchData() {
-  const req = new XMLHttpRequest();
+function fetchData(id) {
+  return new Promise((resolve, reject) => {
+    const req = new XMLHttpRequest();
+    req.onreadystatechange = function(event) {
+        if (this.readyState === XMLHttpRequest.DONE) {
+            if (this.status === 200) {
+                resolve(JSON.parse(this.responseText));
+            } else {
+                reject("Status de la réponse: %d (%s)", this.status, this.statusText);
+            }
+        }
+    };
 
-  req.onreadystatechange = function(event) {
-      // XMLHttpRequest.DONE === 4
-      if (this.readyState === XMLHttpRequest.DONE) {
-          if (this.status === 200) {
-              buildChart(JSON.parse(this.responseText));
-          } else {
-              console.log("Status de la réponse: %d (%s)", this.status, this.statusText);
-          }
-      }
-  };
-
-  req.open('GET', 'journal/chart_data', true);
-  req.send(null);
+    req.open('GET', '/meter/' + id + '/json', true);
+    req.send(null);
+  });
 }
 
 function palette(i) {

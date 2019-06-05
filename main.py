@@ -1,8 +1,3 @@
-"""
-This webapp is aiming to log your electrical consumption.
-Usefull when used with photovoltaic solar panels.
-"""
-
 import os
 from urllib.parse import urlencode
 from functools import wraps
@@ -40,28 +35,19 @@ def requires_auth(f):
     return decorated
 
 
-@app.route('/test')
-def test():
-    print(url_for('login'))
-    print(request.url_root)
-    print(request)
-
-
 @app.route('/')
 @requires_auth
 def index():
-    journal_obj = Journal()
-    days = 15
-    trend = journal_obj.trend_last_days(days)
-    mean = journal_obj.mean
-    return render_template('index.html.j2', title='Powermeter', journal=reversed(journal_obj), mean=mean, trend=trend, days=days)
+    meters = Meter.find_all(session['profile']['id'])
+    return render_template('index.html.j2', title='Powermeter', meters=meters)
 
 
 @app.route('/login')
 def login():
     if os.environ['FLASK_ENV'] == 'development':
         session['profile'] = {
-            'name': 'DEV'
+            'id': -1,
+            'email': 'dev@asgaror.space'
         }
         return redirect(url_for('index'))
     return auth0.authorize_redirect(
@@ -89,50 +75,66 @@ def authorize():
     # Store the user information in flask session.
     session['jwt_payload'] = userinfo
     session['profile'] = {
-        'user_id': userinfo['sub'],
-        'name': userinfo['name'],
-        'picture': userinfo['picture']
+        'id': userinfo['user_id'],
+        'email': userinfo['name'],
     }
     return redirect(url_for('index'))
 
 @app.route('/meter', methods=['POST'])
-@app.route('/meter/<int:id>')
 @requires_auth
-def meter(id=None):
-    if request.method == 'POST':
-        _name = request.form.get('name')
-        try:
-            Meter(session['profile']['name'], _name).save()
-            return redirect(url_for('index'))
-        except (TypeError, ValueError) as err:
-            flash(err)
-    else:
-        pass
+def meter():
+    _name = request.form.get('name')
+    try:
+        Meter(session['profile']['id'], _name).save()
+        return redirect(url_for('index'))
+    except (TypeError, ValueError) as err:
+        flash(err)
 
 
-@app.route('/journal', methods=['GET', 'POST'])
+@app.route('/meter/<int:meter_id>', methods=['POST'])
 @requires_auth
-def journal():
-    if request.method == 'POST':
-        _date = request.form.get('date')
-        _value = float(request.form.get('value'))
-        try:
-            MeterReading(_date, _value).save()
-            return redirect(url_for('index'))
-        except (TypeError, ValueError) as err:
-            flash(err)
+def post_journal(meter_id):
+    if Meter.find(meter_id).user_id != session['profile']['id']:
+        flash('Not allowed to do this !')
+        return redirect(url_for('index'))
+    _date = request.form.get('date')
+    _value = float(request.form.get('value'))
+    try:
+        MeterReading(_date, _value, meter_id).save()
+    except (TypeError, ValueError) as err:
+        flash(err)
+    return redirect(url_for('journal', meter_id=meter_id))
 
-    journal_obj = Journal()
+
+@app.route('/meter/<int:meter_id>/journal')
+@requires_auth
+def journal(meter_id):
+    if Meter.find(meter_id).user_id != session['profile']['id']:
+        flash('Not allowed to do this !')
+        return redirect(url_for('index'))
+    journal_obj = Journal(meter_id)
+    return render_template('journal.html.j2', title='Journal', journal_obj=reversed(journal_obj), meter_id=meter_id)
+
+
+@app.route('/meter/<int:meter_id>/graph')
+@requires_auth
+def graph(meter_id):
+    if Meter.find(meter_id).user_id != session['profile']['id']:
+        flash('Not allowed to do this !')
+        return redirect(url_for('index'))
+    journal_obj = Journal(meter_id)
+    days = 15
+    trend = journal_obj.trend_last_days(days)
     mean = journal_obj.mean
-
-    return render_template('journal.html.j2', title='Meter Readings',
-                           journal=reversed(journal_obj), mean=mean)
+    return render_template('graph.html.j2', title='Journal', journal_obj=reversed(journal_obj), meter_id=meter_id, mean=mean, trend=trend, days=days)
 
 
-@app.route('/journal/chart_data')
+@app.route('/meter/<int:meter_id>/json')
 @requires_auth
-def get_chart_data():
-    journal_obj = Journal()
+def json_chart_data(meter_id):
+    if Meter.find(meter_id).user_id != session['profile']['id']:
+        return jsonify({})
+    journal_obj = Journal(meter_id)
 
     chart_data = {
         'y_min': 0.0,
@@ -158,34 +160,51 @@ def get_chart_data():
     })
 
 
-@app.route('/journal/export')
+@app.route('/meter/<int:meter_id>/journal/export')
 @requires_auth
-def export_csv():
-    journal_obj = Journal()
-    filename = journal_obj.export_csv()
+def export_csv(meter_id):
+    meter = Meter.find(meter_id)
+    if meter.user_id == session['profile']['id']:
+        journal_obj = Journal(meter_id)
+        filename = journal_obj.export_csv()
+    else:
+        flash('Not allowed to do this !')
     return send_file(filename,
                      mimetype="text/csv",
                      as_attachment=True,
                      attachment_filename="export.csv")
 
 
-@app.route('/journal/import', methods=['POST'])
+@app.route('/meter/<int:meter_id>/journal/import', methods=['POST'])
 @requires_auth
-def import_csv():
+def import_csv(meter_id):
     if 'file' not in request.files:
         flash('No file selected')
-        return redirect(url_for('journal'))
+        return redirect(url_for('journal', meter_id=meter_id))
     file = request.files['file']
     if file.filename == '':
         flash('No file selected')
-        return redirect(url_for('journal'))
-    journal_obj = Journal()
-    journal_obj.import_csv(file)
-    return redirect(url_for('journal'))
+        return redirect(url_for('journal', meter_id=meter_id))
+    meter = Meter.find(meter_id)
+    if meter.user_id == session['profile']['id']:
+        journal_obj = Journal(meter_id)
+        journal_obj.import_csv(file)
+    else:
+        flash('Not allowed to do this !')
+    return redirect(url_for('journal', meter_id=meter_id))
 
 
 @app.route('/mr/<int:id>/delete')
 @requires_auth
 def delete_mr(id):
-    MeterReading.find(id).delete()
-    return redirect(url_for('journal'))
+    try:
+        mr = MeterReading.find(id)
+        meter = Meter.find(mr.meter_id)
+        if meter.user_id == session['profile']['id']:
+            mr.delete()
+        else:
+            flash('Not allowed to do this !')
+        return redirect(url_for('journal', meter_id=mr.meter_id))
+    except:
+        flash('Error, action aborted')
+        return redirect(url_for('index'))

@@ -5,34 +5,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
 {% endblock %}
 {% block content %}
-  <div class="row full-height">
-    <div class="col-sm-9" style="height: 100%">
-      <canvas id="myChart"></canvas>
-    </div>
-    <div class="col-sm-3 d-flex flex-column justify-content-between" style="height: 100%">
-      <ul class="list-group">
-        <li class="list-group-item d-flex justify-content-between">Mean<span><strong>{{ mean }} KWh</strong></span></li>
-        <li class="list-group-item d-flex justify-content-between">Trend of the last {{ days }} days<span><strong>{{ trend }}</strong></span></li>
-      </ul>
-      <ul class="list-group" style="margin-bottom: 8px">
-        <li class="list-group-item">
-          <form action="{{ url_for('journal') }}" method="POST">
-            <div class="form-row">
-              <div class="col-9">
-                <input class="form-control form-control-sm" id="date" name="date" type="date" placeholder="Date">
-                <input class="form-control form-control-sm" id="value" name="value" type="text" placeholder="Value">
-              </div>
-              <div class="col-3">
-                <button class="btn btn-primary btn-sm" type="submit" style="width: 100%; height: 100%; font-size: 24px">+</button>
-              </div>
-            </div>
-          </form>
-        </li>
-      </ul>
-    </div>
-  </div>
-  <script src="static/ir_chart.js"></script>
-  <script>
-    document.getElementById('date').valueAsDate = new Date();
-  </script>
+  <ul>
+    {% for meter in meters %}
+    <li><a href="{{ url_for('graph', meter_id=meter._id) }}">{{meter.name}}</a></li>
+    {% endfor %}
+  </ul>
 {% endblock %}

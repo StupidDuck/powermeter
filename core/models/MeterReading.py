@@ -3,16 +3,13 @@ from core.data_access import meter_reading_dao
 
 class MeterReading:
 
-    def __init__(self, date, value, mr_id=None):
+    def __init__(self, date, value, meter_id, mr_id=None):
         self._id = mr_id
         self.date = date
         self.value = value
+        self.meter_id = meter_id
         self.days = 0
         self.consumption = 0
-
-    def __str__(self):
-        return "date: {}, value : {}, days : {}, mean_consumption_per_day : {}".format(
-            self.date, self.value, self.days, self.mean_consumption_per_day)
 
     @staticmethod
     def find(mr_id):

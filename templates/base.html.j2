@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.0/css/bootstrap.min.css" integrity="sha384-PDle/QlgIONtM1aqA2Qemk5gPOE7wFq8+Em+G/hmo5Iq0CCmYZLv3fVRDJ4MMwEA" crossorigin="anonymous">
-    <link rel="stylesheet" href="static/style.css">
+    <link rel="stylesheet" href="/static/style.css">
     <!--<meta http-equiv="Content-Security-Policy" content="script-src 'self'; report-uri">-->
     <title>{{ title }}</title>
     {% block head %}{% endblock %}
@@ -17,13 +17,18 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
+          {% if meter_id %}
           <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('journal') }}">Metering</a>
+            <a class="nav-link" href="{{ url_for('graph', meter_id=meter_id) }}">Graph</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('journal', meter_id=meter_id) }}">List</a>
+          </li>
+          {% endif %}
         </ul>
         <span class="navbar-text ml-auto">
           {% if 'profile' in session %}
-            {{ session['profile']['name'] }} (<a href="{{ url_for('logout') }}">logout</a>)
+            {{ session['profile']['email'] }} (<a href="{{ url_for('logout') }}">logout</a>)
           {% else %}
             <a class="nav-link" href="{{ url_for('login') }}">Login</a>
           {% endif %}

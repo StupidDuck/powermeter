@@ -14,20 +14,12 @@ def get_cursor():
 with get_cursor() as c:
     c.execute("""SELECT table_name
                         FROM information_schema.tables
-                        WHERE table_name='users';""")
-    if c.fetchone() is None:
-        c.execute("""CREATE TABLE users (
-                        id SERIAL PRIMARY KEY,
-                        email VARCHAR(30) NOT NULL
-                        );""")
-    c.execute("""SELECT table_name
-                        FROM information_schema.tables
                         WHERE table_name='meters';""")
     if c.fetchone() is None:
         c.execute("""CREATE TABLE meters (
                         id SERIAL PRIMARY KEY,
                         name VARCHAR(30) NOT NULL,
-                        user_id integer REFERENCES users (id)
+                        user_id integer NOT NULL
                         );""")
     c.execute("""SELECT table_name
                         FROM information_schema.tables

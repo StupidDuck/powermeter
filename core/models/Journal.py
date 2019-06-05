@@ -7,6 +7,7 @@ from core.data_access import meter_reading_dao
 class Journal:
 
     def __init__(self, meter_id):
+        self.meter_id = meter_id
         self._mrs = journal_dao.find_all(meter_id)
 
         for idx, val in enumerate(self._mrs):
@@ -83,5 +84,5 @@ class Journal:
             line_list = line.split(',')
             value = line_list[1]
             date = line_list[0]
-            meter_reading_dao.insert(core.models.MeterReading(date, value))
+            meter_reading_dao.insert(core.models.MeterReading(date, value, self.meter_id))
             line = file.readline().decode("utf-8")
