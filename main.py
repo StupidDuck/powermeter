@@ -50,12 +50,11 @@ def test():
 @app.route('/')
 @requires_auth
 def index():
-    # TO_DO : include mean and trends on js chart ?
     journal_obj = Journal()
     days = 15
     trend = journal_obj.trend_last_days(days)
     mean = journal_obj.mean
-    return render_template('index.html.j2', title='Powermeter', mean=mean, trend=trend, days=days)
+    return render_template('index.html.j2', title='Powermeter', journal=reversed(journal_obj), mean=mean, trend=trend, days=days)
 
 
 @app.route('/login')

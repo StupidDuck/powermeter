@@ -6,13 +6,15 @@
 {% endblock %}
 {% block content %}
   <div class="row full-height">
-    <div class="col-sm-9">
-      <canvas id="myChart" height="100%"></canvas>
+    <div class="col-sm-9" style="height: 100%">
+      <canvas id="myChart"></canvas>
     </div>
-    <div class="col-sm-3">
+    <div class="col-sm-3 d-flex flex-column justify-content-between" style="height: 100%">
       <ul class="list-group">
         <li class="list-group-item d-flex justify-content-between">Mean<span><strong>{{ mean }} KWh</strong></span></li>
         <li class="list-group-item d-flex justify-content-between">Trend of the last {{ days }} days<span><strong>{{ trend }}</strong></span></li>
+      </ul>
+      <ul class="list-group" style="margin-bottom: 8px">
         <li class="list-group-item">
           <form action="{{ url_for('journal') }}" method="POST">
             <div class="form-row">

@@ -13,9 +13,13 @@ class Journal:
             if idx > 0:
                 val.consumption = val.value - prev_value
                 val.days = (val.date - prev_date).days
+                val.prev_date = prev_date
+                val.prev_value = prev_value
             else:
                 val.consumption = 0.0
                 val.days = 0
+                val.prev_date = None
+                val.prev_value = 0
             prev_value = val.value
             prev_date = val.date
 
