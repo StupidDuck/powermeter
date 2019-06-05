@@ -46,7 +46,7 @@ def index():
 def login():
     if os.environ['FLASK_ENV'] == 'development':
         session['profile'] = {
-            'id': -1,
+            'id': 'auth0|6ca2578067456311c2de32be',
             'email': 'dev@asgaror.space'
         }
         return redirect(url_for('index'))
@@ -75,7 +75,6 @@ def authorize():
     # Store the user information in flask session.
     session['jwt_payload'] = userinfo
     session['profile'] = {
-        #'id': userinfo['user_id'],
         'id': userinfo['sub'],
         'email': userinfo['name'],
     }

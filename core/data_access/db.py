@@ -19,7 +19,7 @@ with get_cursor() as c:
         c.execute("""CREATE TABLE meters (
                         id SERIAL PRIMARY KEY,
                         name VARCHAR(30) NOT NULL,
-                        user_id integer NOT NULL
+                        user_id text NOT NULL
                         );""")
     c.execute("""SELECT table_name
                         FROM information_schema.tables

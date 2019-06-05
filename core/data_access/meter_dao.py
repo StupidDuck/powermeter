@@ -10,7 +10,7 @@ def find_by_id(id):
 
 def find_all(user_id):
     with get_db() as db:
-        db.execute("SELECT user_id, name, id FROM meters WHERE user_id = %s", (user_id,))
+        db.execute("SELECT user_id, name, id FROM meters WHERE user_id LIKE %s", (user_id,))
         records = db.fetchall()
     return [core.models.Meter(record[0], record[1], record[2]) for record in records]
 

@@ -9,5 +9,9 @@
     {% for meter in meters %}
     <li><a href="{{ url_for('graph', meter_id=meter._id) }}">{{meter.name}}</a></li>
     {% endfor %}
+    <form action="{{ url_for('meter') }}" method="POST">
+      <input class="form-control" id="name" name="name" type="text" placeholder="Name">
+      <button class="btn btn-primary btn-sm" type="submit">Create</button>
+    </form>
   </ul>
 {% endblock %}
