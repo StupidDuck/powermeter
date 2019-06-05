@@ -75,7 +75,8 @@ def authorize():
     # Store the user information in flask session.
     session['jwt_payload'] = userinfo
     session['profile'] = {
-        'id': userinfo['user_id'],
+        #'id': userinfo['user_id'],
+        'id': userinfo['sub'],
         'email': userinfo['name'],
     }
     return redirect(url_for('index'))
