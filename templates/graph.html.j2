@@ -33,7 +33,6 @@
   </div>
   <script src="/static/ir_chart.js"></script>
   <script>
-    //fetchData({{meter_id}}).then((data) => buildChart(data));
     fetchData({{meter_id}}).then(buildChart);
     document.getElementById('date').valueAsDate = new Date();
   </script>

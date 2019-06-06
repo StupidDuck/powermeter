@@ -106,6 +106,21 @@ def post_journal(meter_id):
     return redirect(url_for('journal', meter_id=meter_id))
 
 
+@app.route('/meter/<int:id>/delete')
+@requires_auth
+def delete_meter(id):
+    try:
+        meter = Meter.find(id)
+        if meter.user_id == session['profile']['id']:
+            meter.delete()
+        else:
+            flash('Not allowed to do this !')
+    except:
+        flash('Error, action aborted')
+    finally:
+        return redirect(url_for('index'))
+
+
 @app.route('/meter/<int:meter_id>/journal')
 @requires_auth
 def journal(meter_id):

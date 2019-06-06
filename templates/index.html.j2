@@ -5,13 +5,22 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
 {% endblock %}
 {% block content %}
-  <ul>
-    {% for meter in meters %}
-    <li><a href="{{ url_for('graph', meter_id=meter._id) }}">{{meter.name}}</a></li>
-    {% endfor %}
-    <form action="{{ url_for('meter') }}" method="POST">
-      <input class="form-control" id="name" name="name" type="text" placeholder="Name">
-      <button class="btn btn-primary btn-sm" type="submit">Create</button>
-    </form>
-  </ul>
+<div class="row">
+  <div class="col-4">
+    <ul class="list-group">
+      {% for meter in meters %}
+      <li class="list-group-item d-flex justify-content-between">
+        <a href="{{ url_for('graph', meter_id=meter._id) }}">{{meter.name}}</a>
+        <a class="btn btn-danger btn-sm" href="{{ url_for('delete_meter', id=meter._id) }}">-</a>
+      </li>
+      {% endfor %}
+      <li class="list-group-item">
+        <form class="form-inline d-flex justify-content-between" action="{{ url_for('meter') }}" method="POST">
+          <input class="form-control" id="name" name="name" type="text" placeholder="Name">
+          <button class="btn btn-primary btn-sm" type="submit">Create</button>
+        </form>
+      </li>
+    </ul>
+  </div>
+</div>
 {% endblock %}
