@@ -11,7 +11,7 @@
       {% for meter in meters %}
       <li class="list-group-item d-flex justify-content-between">
         <a href="{{ url_for('graph', meter_id=meter._id) }}">{{meter.name}}</a>
-        <a class="btn btn-danger btn-sm" href="{{ url_for('delete_meter', id=meter._id) }}">-</a>
+        <button id="btn-modal" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#deleteModal" data-link={{ url_for('delete_meter', id=meter._id) }}>-</button>
       </li>
       {% endfor %}
       <li class="list-group-item">
@@ -23,4 +23,30 @@
     </ul>
   </div>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Delete this meter, and all its content ?</h5>
+        <button type="button" class="close" data-dismiss="modal">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+        <a id="confirm-modal" class="btn btn-danger" href="#">Yes</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const btn = document.getElementById('btn-modal');
+  btn.onclick = function(e) {
+    const confirm = document.getElementById('confirm-modal');
+    confirm.href = e.target.dataset.link;
+  };
+</script>
 {% endblock %}

@@ -164,7 +164,9 @@ def json_chart_data(meter_id):
 
     mean = journal_obj.mean
     chart_max = max([mr.mean_consumption_per_day for mr in journal_obj])
+    chart_min = min([mr.mean_consumption_per_day for mr in journal_obj])
     chart_data['y_max'] = chart_max + chart_max / 5
+    chart_data['y_min'] = chart_min + chart_min / 5
 
     return jsonify({
         'values': chart_data['values'],
