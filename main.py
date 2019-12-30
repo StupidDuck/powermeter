@@ -1,9 +1,10 @@
 import os
+import sys
 from urllib.parse import urlencode
 from functools import wraps
-from authlib.flask.client import OAuth
+from authlib.integrations.flask_client import OAuth
 from dotenv import load_dotenv
-from flask import Flask, request, redirect, url_for, render_template, flash, session, jsonify, send_file
+from flask import Flask, request, redirect, url_for, session, jsonify, send_file, render_template, flash
 from core.models import Meter, Journal, MeterReading
 
 load_dotenv()
@@ -39,7 +40,17 @@ def requires_auth(f):
 @requires_auth
 def index():
     meters = Meter.find_all(session['profile']['id'])
-    return render_template('index.html.j2', title='Powermeter', meters=meters)
+    return render_template('index.html.j2', meters=meters)
+
+
+@app.route('/api/')
+@requires_auth
+def index_api():
+    meters = Meter.find_all(session['profile']['id'])
+    return jsonify([{
+        'id': meter._id,
+        'name': meter.name
+     } for meter in meters])
 
 
 @app.route('/login')
@@ -80,6 +91,7 @@ def authorize():
     }
     return redirect(url_for('index'))
 
+
 @app.route('/meter', methods=['POST'])
 @requires_auth
 def meter():
@@ -88,21 +100,23 @@ def meter():
         Meter(session['profile']['id'], _name).save()
         return redirect(url_for('index'))
     except (TypeError, ValueError) as err:
-        flash(err)
+        pass
+        #flash(err)
 
 
 @app.route('/meter/<int:meter_id>', methods=['POST'])
 @requires_auth
 def post_journal(meter_id):
     if Meter.find(meter_id).user_id != session['profile']['id']:
-        flash('Not allowed to do this !')
+        #flash('Not allowed to do this !')
         return redirect(url_for('index'))
     _date = request.form.get('date')
     _value = float(request.form.get('value'))
     try:
         MeterReading(_date, _value, meter_id).save()
     except (TypeError, ValueError) as err:
-        flash(err)
+        pass
+        #flash(err)
     return redirect(url_for('journal', meter_id=meter_id))
 
 
@@ -116,7 +130,7 @@ def delete_meter(id):
         else:
             flash('Not allowed to do this !')
     except:
-        flash('Error, action aborted')
+        flash('Error, action aborted !')
     finally:
         return redirect(url_for('index'))
 
@@ -125,23 +139,24 @@ def delete_meter(id):
 @requires_auth
 def journal(meter_id):
     if Meter.find(meter_id).user_id != session['profile']['id']:
-        flash('Not allowed to do this !')
-        return redirect(url_for('index'))
-    journal_obj = Journal(meter_id)
-    return render_template('journal.html.j2', title='Journal', journal_obj=reversed(journal_obj), meter_id=meter_id)
-
-
-@app.route('/meter/<int:meter_id>/graph')
-@requires_auth
-def graph(meter_id):
-    if Meter.find(meter_id).user_id != session['profile']['id']:
-        flash('Not allowed to do this !')
+        #flash('Not allowed to do this !')
         return redirect(url_for('index'))
     journal_obj = Journal(meter_id)
     days = 15
-    trend = journal_obj.trend_last_days(days)
-    mean = journal_obj.mean
-    return render_template('graph.html.j2', title='Journal', journal_obj=reversed(journal_obj), meter_id=meter_id, mean=mean, trend=trend, days=days)
+    return jsonify({
+        'meter_id': meter_id,
+        'journal': { 
+            'entries': list(reversed([{
+                'id': mr._id,
+                'date': mr.date,
+                'value': mr.value,
+                'mean_consumption_per_day': mr.mean_consumption_per_day
+            } for mr in journal_obj._mrs])),
+            'days': days,
+            'trend_last_days': journal_obj.trend_last_days(days),
+            'mean': journal_obj.mean
+        }
+    })
 
 
 @app.route('/meter/<int:meter_id>/json')
@@ -185,7 +200,8 @@ def export_csv(meter_id):
         journal_obj = Journal(meter_id)
         filename = journal_obj.export_csv()
     else:
-        flash('Not allowed to do this !')
+        pass
+        #flash('Not allowed to do this !')
     return send_file(filename,
                      mimetype="text/csv",
                      as_attachment=True,
@@ -196,18 +212,19 @@ def export_csv(meter_id):
 @requires_auth
 def import_csv(meter_id):
     if 'file' not in request.files:
-        flash('No file selected')
+        #flash('No file selected')
         return redirect(url_for('journal', meter_id=meter_id))
     file = request.files['file']
     if file.filename == '':
-        flash('No file selected')
+        #flash('No file selected')
         return redirect(url_for('journal', meter_id=meter_id))
     meter = Meter.find(meter_id)
     if meter.user_id == session['profile']['id']:
         journal_obj = Journal(meter_id)
         journal_obj.import_csv(file)
     else:
-        flash('Not allowed to do this !')
+        pass
+        #flash('Not allowed to do this !')
     return redirect(url_for('journal', meter_id=meter_id))
 
 
@@ -223,5 +240,5 @@ def delete_mr(id):
             flash('Not allowed to do this !')
         return redirect(url_for('journal', meter_id=mr.meter_id))
     except:
-        flash('Error, action aborted')
+        #flash('Error, action aborted')
         return redirect(url_for('index'))
