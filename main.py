@@ -150,12 +150,12 @@ def journal_api(meter_id):
     return jsonify({
         'meter_id': meter_id,
         'journal': { 
-            'entries': list(reversed([{
+            'entries': [{
                 'id': mr._id,
                 'date': mr.date,
                 'value': mr.value,
                 'mean_consumption_per_day': mr.mean_consumption_per_day
-            } for mr in journal_obj._mrs])),
+            } for mr in journal_obj._mrs],
             'days': days,
             'trend_last_days': journal_obj.trend_last_days(days),
             'mean': journal_obj.mean

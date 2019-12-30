@@ -88,7 +88,7 @@ function formatForChart(journal) {
       chart_data.y_min = chart_min + chart_min / 5;
 
       resolve({
-        'values': chart_data.values.reverse(),
+        'values': chart_data.values,
         'mean': journal.mean,
         'y_min': chart_data.y_min,
         'y_max': chart_data.y_max,

@@ -51,6 +51,7 @@ class Journal:
         value = 0
         remaining_days = nbr_days
 
+        # -2 non ? pas moyen de tirer une tendence de 2 resultat, il en faut mini 3...
         for mr in self._mrs[::-1]:
             if mr.days > remaining_days:
                 value += remaining_days * mr.mean_consumption_per_day
