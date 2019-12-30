@@ -10,7 +10,7 @@
     <ul class="list-group">
       {% for meter in meters %}
       <li class="list-group-item d-flex justify-content-between">
-        <a href="{{ url_for('journal', meter_id=meter._id) }}">{{meter.name}}</a>
+        <a href="{{ url_for('view', meter_id=meter._id) }}">{{meter.name}}</a>
         <button id="btn-modal" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#deleteModal" data-link="{{ url_for('delete_meter', id=meter._id) }}">-</button>
       </li>
       {% endfor %}

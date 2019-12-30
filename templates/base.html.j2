@@ -16,16 +16,6 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-          {% if meter_id %}
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('graph', meter_id=meter_id) }}">Graph</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('journal', meter_id=meter_id) }}">List</a>
-          </li>
-          {% endif %}
-        </ul>
         <span class="navbar-text ml-auto">
           {% if 'profile' in session %}
             {{ session['profile']['email'] }} (<a href="{{ url_for('logout') }}">logout</a>)
