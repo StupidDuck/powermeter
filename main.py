@@ -163,39 +163,6 @@ def journal_api(meter_id):
     })
 
 
-# @app.route('/meter/<int:meter_id>/json')
-# @requires_auth
-# def json_chart_data(meter_id):
-#     if Meter.find(meter_id).user_id != session['profile']['id']:
-#         return jsonify({})
-#     journal_obj = Journal(meter_id)
-
-#     chart_data = {
-#         'y_min': 0.0,
-#         'y_max': 0.0,
-#         'labels': [],
-#         'values': []
-#     }
-
-#     for mr in journal_obj[1:]:
-#         chart_data['labels'].append(mr.date)
-#         chart_data['values'].append(mr.mean_consumption_per_day)
-
-#     mean = journal_obj.mean
-#     chart_max = max([mr.mean_consumption_per_day for mr in journal_obj])
-#     chart_min = min([mr.mean_consumption_per_day for mr in journal_obj])
-#     chart_data['y_max'] = chart_max + chart_max / 5
-#     chart_data['y_min'] = chart_min + chart_min / 5
-
-#     return jsonify({
-#         'values': chart_data['values'],
-#         'mean': mean,
-#         'labels': chart_data['labels'],
-#         'y_min': chart_data['y_min'],
-#         'y_max': chart_data['y_max'],
-#     })
-
-
 @app.route('/meter/<int:meter_id>/journal/export')
 @requires_auth
 def export_csv(meter_id):
