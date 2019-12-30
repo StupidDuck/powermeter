@@ -10,8 +10,8 @@
     <ul class="list-group">
       {% for meter in meters %}
       <li class="list-group-item d-flex justify-content-between">
-        <a href="{{ url_for('graph', meter_id=meter._id) }}">{{meter.name}}</a>
-        <button id="btn-modal" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#deleteModal" data-link={{ url_for('delete_meter', id=meter._id) }}>-</button>
+        <a href="{{ url_for('view', meter_id=meter._id) }}">{{meter.name}}</a>
+        <button id="btn-modal" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#deleteModal" data-link="{{ url_for('delete_meter', id=meter._id) }}">-</button>
       </li>
       {% endfor %}
       <li class="list-group-item">
@@ -36,7 +36,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-        <a id="confirm-modal" class="btn btn-danger" href="#">Yes</a>
+        <button type="button" id="confirm-modal" class="btn btn-danger">Yes</a>
       </div>
     </div>
   </div>

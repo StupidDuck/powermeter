@@ -18,5 +18,5 @@ with get_cursor() as c:
                         id SERIAL PRIMARY KEY,
                         date DATE NOT NULL,
                         value REAL NOT NULL,
-                        meter_id integer REFERENCES meters (id)
+                        meter_id integer REFERENCES meters (id) ON DELETE CASCADE
                         );""")
