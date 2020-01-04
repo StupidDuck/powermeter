@@ -1,0 +1,63 @@
+<template id="list-view">
+  {# template-upload here #}
+  <div class="row" style="height: calc(100vh - 100px); overflow: scroll">
+    <table class="table table-sm">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Reading (KWh)</th>
+          <th>Consumption (KWh / day)</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="list-body">
+      </tbody>
+    </table>
+  </div>
+</template>
+
+<script>
+class ListView extends HTMLElement {
+  constructor(rawData) {
+    super();
+
+    this._rawData = rawData;
+
+    let template = document.getElementById('list-view');
+    let templateContent = template.content;
+
+    const shadowRoot = this.attachShadow({mode: 'open'})
+      .appendChild(templateContent.cloneNode(true));
+  }
+
+  connectedCallback() {
+    const listBody = this.shadowRoot.getElementById("list-body");
+    this._rawData.journal.entries.map((entry) => {
+      let newRow = listBody.insertRow(-1);
+      
+      let newCell0 = newRow.insertCell(0);
+      let newText0 = document.createTextNode(entry.date);
+      newCell0.appendChild(newText0);
+      
+      let newCell1 = newRow.insertCell(1);
+      let newText1 = document.createTextNode(entry.value);
+      newCell1.appendChild(newText1);
+
+      let newCell2 = newRow.insertCell(2);
+      let newText2 = document.createTextNode(entry.mean_consumption_per_day);
+      newCell2.appendChild(newText2);
+
+      let newCell3 = newRow.insertCell(3);
+      newCell3.setAttribute("id", entry.id);
+      let newText3 = document.createTextNode("X");
+      newCell3.appendChild(newText3);
+      newCell3.onclick = (evt) => {
+        const id = evt.target.getAttribute("id");
+        console.log(`ID to delete is ${id}`);
+      };
+    });
+  }
+}
+
+customElements.define('list-view', ListView);
+</script>
