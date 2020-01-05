@@ -18,10 +18,10 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('view', meter_id=meter_id, _anchor='graph') }}">Graph</a>
+            <a class="nav-link" href="{{ url_for('view', meter_id=meter_id or -1, _anchor='graph') }}">Graph</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('view', meter_id=meter_id, _anchor='list') }}">List</a>
+            <a class="nav-link" href="{{ url_for('view', meter_id=meter_id or -1, _anchor='list') }}">List</a>
           </li>
         </ul>
         <span class="navbar-text ml-auto">

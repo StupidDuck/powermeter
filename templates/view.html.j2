@@ -15,7 +15,8 @@
     fetchData({{meter_id}})
       .then((resp) => {
         data = resp;
-        const hash = location.hash;
+        let hash = location.hash;
+        if (hash == "") hash = "#graph";
         switchView(hash, node, resp);
       });
 
