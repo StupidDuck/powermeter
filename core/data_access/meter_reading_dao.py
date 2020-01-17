@@ -2,11 +2,25 @@ import core.models
 from core.data_access.db import get_cursor as get_db
 
 
-def find_by_id(id):
-    with get_db() as db:
-        db.execute("SELECT date, value, meter_id, id FROM indexes WHERE id = %s", (id,))
-        record = db.fetchone()
-    return core.models.MeterReading(record[0], record[1], record[2], record[3])
+def find(user_id, id):
+    if id is None:
+        with get_db() as db:
+            db.execute("""
+                SELECT indexes.date, indexes.value, indexes.meter_id, indexes.id
+                FROM indexes INNER JOIN meters ON indexes.meter_id = meters.id
+                WHERE meters.user_id = %s""", (user_id,))
+            records = db.fetchall()
+        return [core.models.MeterReading(record[0], record[1], record[2], record[3]) for record in records]
+    else:
+        with get_db() as db:
+            db.execute("""
+                SELECT indexes.date, indexes.value, indexes.meter_id, indexes.id
+                FROM indexes INNER JOIN meters ON indexes.meter_id = meters.id
+                WHERE meters.user_id = %s AND indexes.id = %s""", (user_id, id,))
+            record = db.fetchone()
+            if record is None:
+                return None
+        return core.models.MeterReading(record[0], record[1], record[2], record[3])
 
 def insert(meter_reading):
     with get_db() as db:

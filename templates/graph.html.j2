@@ -1,0 +1,10 @@
+<canvas id="myChart"></canvas>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/locale/fr.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.js"></script>
+<script src="/static/chart.js"></script>
+<script>
+  const ctx = document.getElementById("myChart");
+  formatForChart({{ journal }}).then((journal) => buildChart(ctx, journal));
+</script>

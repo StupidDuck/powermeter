@@ -2,18 +2,24 @@ import core.models
 from core.data_access.db import get_cursor as get_db
 
 
-def find_by_id(id):
-    with get_db() as db:
-        db.execute("SELECT user_id, name, id FROM meters WHERE id = %s", (id,))
-        record = db.fetchone()
-    return core.models.Meter(record[0], record[1], record[2])
-
-def find_all(user_id):
-    with get_db() as db:
-        db.execute("SELECT user_id, name, id FROM meters WHERE user_id LIKE %s", (user_id,))
-        records = db.fetchall()
-    return [core.models.Meter(record[0], record[1], record[2]) for record in records]
-
+def find(user_id, id):
+    if id is None:
+        with get_db() as db:
+            db.execute("""
+                SELECT user_id, name, id FROM meters
+                WHERE user_id = %s""", (user_id,))
+            records = db.fetchall()
+        return [core.models.Meter(record[0], record[1], record[2]) for record in records]
+    else:
+        with get_db() as db:
+            db.execute("""
+                SELECT user_id, name, id FROM meters
+                WHERE user_id = %s AND id = %s""", (user_id, id))
+            record = db.fetchone()
+            if record is None:
+                return None
+        return core.models.Meter(record[0], record[1], record[2])
+        
 def insert(meter):
     with get_db() as db:
         db.execute("INSERT INTO meters (user_id, name) VALUES (%s, %s) RETURNING id",

@@ -16,14 +16,6 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('view', meter_id=meter_id or -1, _anchor='graph') }}">Graph</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('view', meter_id=meter_id or -1, _anchor='list') }}">List</a>
-          </li>
-        </ul>
         <span class="navbar-text ml-auto">
           {% if 'profile' in session %}
             {{ session['profile']['email'] }} (<a href="{{ url_for('logout') }}">logout</a>)
@@ -33,7 +25,7 @@
         </span>
       </div>
     </nav>
-    <div class="container-fluid">
+    <div class="container-fluid full-height">
       <div class="row">
         <div class="col">
           {% with messages = get_flashed_messages() %}

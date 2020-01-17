@@ -7,16 +7,23 @@
 {% block content %}
 <div class="row justify-content-md-center">
   <div class="col-md-6">
-    <ul class="list-group">
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">
+        <h4>Meter list</h4>
+      </li>
       {% for meter in meters %}
       <li class="list-group-item d-flex justify-content-between">
-        <a href="{{ url_for('view', meter_id=meter._id) }}">{{meter.name}}</a>
-        <button id="btn-modal" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#deleteModal" data-link="{{ url_for('delete_meter', id=meter._id) }}">-</button>
+        <span>
+          <span class="font-weight-bolder font-italic">#</span>
+          <a href="{{ url_for('view', meter_id=meter._id) }}">{{meter.name}}</a>
+        </span>
+        <button id="btn-modal" type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal" data-link="{{ url_for('delete_meter', meter_id=meter._id) }}"><span class="font-weight-bolder">X</span></button>
       </li>
       {% endfor %}
       <li class="list-group-item">
-        <form class="form-inline d-flex justify-content-between" action="{{ url_for('meter') }}" method="POST">
-          <input class="form-control" id="name" name="name" type="text" placeholder="Name">
+        <h4>Add a new meter</h4>
+        <form class="form d-flex justify-content-between" action="{{ url_for('meter') }}" method="POST">
+          <input class="form-control" id="name" name="name" type="text" placeholder="Meter name">
           <button class="btn btn-primary btn-sm" type="submit">Create</button>
         </form>
       </li>

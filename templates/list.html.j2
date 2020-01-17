@@ -1,0 +1,20 @@
+<table class="table table-sm table-hover">
+  <thead>
+    <tr>
+      <th scope="col">Period mean</th>
+      <th scope="col">Date</th>
+      <th scope="col">Index</th>
+      <th scope="col">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for reading in journal.entries %}
+        <tr>
+          <td>{{ reading.mean_consumption_per_day }}</td>
+          <td>{{ reading.date }}</td>
+          <td>{{ reading.value }}</td>
+          <td><a class="btn btn-sm btn-danger" href="{{ url_for('delete_mr', mr_id=reading.id) }}">X</a></td>
+        </tr>
+    {% endfor %}
+  </tbody>
+</table>

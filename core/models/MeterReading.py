@@ -3,8 +3,8 @@ from core.data_access import meter_reading_dao
 
 class MeterReading:
 
-    def __init__(self, date, value, meter_id, mr_id=None):
-        self._id = mr_id
+    def __init__(self, date, value, meter_id, id=None):
+        self._id = id
         self.date = date
         self.value = value
         self.meter_id = meter_id
@@ -12,8 +12,11 @@ class MeterReading:
         self.consumption = 0
 
     @staticmethod
-    def find(mr_id):
-        return meter_reading_dao.find_by_id(mr_id)
+    def find(**kwargs):
+        if 'id' in kwargs:
+            return meter_reading_dao.find(kwargs['user_id'], kwargs['id'])
+        else:
+            return meter_reading_dao.find(kwargs['user_id'], id=None)
 
     def save(self):
         self._id = meter_reading_dao.insert(self)

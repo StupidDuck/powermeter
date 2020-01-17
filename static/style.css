@@ -9,7 +9,12 @@ body {
 }
 
 .full-height {
-  height: calc(100vh - 56px - 8px);
+  height: calc(100vh - 56px - 8px - 42px);
+}
+
+.tab-height {
+  height: calc(100vh - 56px - 8px - 92px);
+  max-height: calc(100vh - 56px - 8px - 92px);
 }
 
 .navbar {
