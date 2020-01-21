@@ -1,17 +1,15 @@
 {% extends "base.html.j2" %}
 {% block content %}
-<div class="row h-100">
-  <div class="col-9">
+{## h-100 causes problems... ##}
+<div class="row">
+  <div class="col-12 col-lg-9">
     <!-- Nav tabs -->
-    <ul class="nav nav-tabs" id="myTab" role="tablist">
+    <ul class="nav nav-tabs d-none d-sm-flex" id="myTab" role="tablist">
       <li class="nav-item">
         <a class="nav-link active" id="graph-tab" data-toggle="tab" href="#graph" role="tab" aria-controls="graph" aria-selected="true">Graph</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" id="list-tab" data-toggle="tab" href="#list" role="tab" aria-controls="list" aria-selected="false">List</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" id="csv-tab" data-toggle="tab" href="#csv" role="tab" aria-controls="csv" aria-selected="false">Import / Export</a>
       </li>
     </ul>
     <!-- Tab panes -->
@@ -22,12 +20,9 @@
       <div class="tab-pane tab-height overflow-auto" id="list" role="tabpanel" aria-labelledby="list-tab">
         {% include "list.html.j2" %}  
       </div>
-      <div class="tab-pane" id="csv" role="tabpanel" aria-labelledby="csv-tab">
-        {% include "csv.html.j2" %}  
-      </div>
     </div>
   </div>
-  <div class="col-3">
+  <div class="col-12 col-lg-3">
     {% include 'side.html.j2' %}
   </div>
 </div>

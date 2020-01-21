@@ -1,6 +1,7 @@
 <div class="d-flex flex-column h-100">
 <div class="d-flex flex-column justify-content-between flex-grow-1">
     <ul class="list-group mt-5">
+        <li class="list-group-item d-flex justify-content-between active"><span><strong>{{ meter_name }}</strong></span></li>
         <li class="list-group-item d-flex justify-content-between">Mean<span><strong>{{ journal.mean }} KWh</strong></span></li>
         <li class="list-group-item d-flex justify-content-between">Annual projection<span><strong>{{ journal.mean * 365 }} KWh</strong></span></li>
         <li class="list-group-item d-flex justify-content-between">Trend of the last {{ journal.days }} days<span><strong>{{ journal.trend_last_days }}</strong></span></li>
@@ -8,20 +9,45 @@
     <ul class="list-group" style="margin-bottom: 8px">
         <li class="list-group-item">
             <form action="{{ url_for('post_journal', meter_id=meter_id) }}" method="POST">
-            <div class="form-row">
-                <div class="col-9">
-                <input class="form-control form-control-sm" id="date" name="date" type="date" placeholder="Date">
-                <input class="form-control form-control-sm" id="value" name="value" type="text" placeholder="Value">
+                <div class="form-row">
+                    <div class="col-9">
+                    <input class="form-control form-control-sm" id="date" name="date" type="date" placeholder="Date">
+                    <input class="form-control form-control-sm" id="value" name="value" type="text" placeholder="Value">
+                    </div>
+                    <div class="col-3">
+                    <button class="btn btn-primary btn-sm" type="submit" style="width: 100%; height: 100%; font-size: 24px">+</button>
+                    </div>
                 </div>
-                <div class="col-3">
-                <button class="btn btn-primary btn-sm" type="submit" style="width: 100%; height: 100%; font-size: 24px">+</button>
+            </form>
+            <button id="btn-modal-csv "class="btn btn-primary btn-block mt-2"
+              data-toggle="modal"
+              data-target="#importModal">Import from .csv file</button>
+            
+            <!-- Modal -->
+            <div class="modal fade" id="importModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Import a .csv file...</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <form id="confirm-modal-csv" action="{{ url_for('import_csv', meter_id=meter_id) }}" enctype="multipart/form-data" method="POST">
+                      <input name="file" type="file" accept="text/csv">
+                      <input class="btn btn-primary" type="submit" value="Import file">
+                    </form>
+                </div>
                 </div>
             </div>
-            </form>
+            </div>
         </li>
     </ul>
 </div>
 </div>
 <script>
-    document.getElementById('date').valueAsDate = new Date();
+  document.getElementById('date').valueAsDate = new Date();
+  document.getElementById('value').focus();
 </script>

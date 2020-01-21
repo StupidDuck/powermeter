@@ -139,7 +139,7 @@ def view(meter_id):
     if resp.status_code != 200:
         return redirect(url_for('index'))
     resp_json = resp.get_json()
-    return render_template('view.html.j2', meter_id=resp_json['meter_id'], journal=resp_json['journal'])
+    return render_template('view.html.j2', meter_id=resp_json['meter_id'], meter_name=resp_json['meter_name'], journal=resp_json['journal'])
 
 
 @app.route('/api/meter/<int:meter_id>/journal')
@@ -151,6 +151,7 @@ def journal_api(meter_id):
         days = 15
         return jsonify({
             'meter_id': meter._id,
+            'meter_name': meter.name,
             'journal': { 
                 'entries': [{
                     'id': mr._id,

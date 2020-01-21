@@ -46,3 +46,9 @@ body {
   border-color: var(--color-secondary);
   color: var(--color-primary);
 }
+
+li.list-group-item.active {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-text);
+}

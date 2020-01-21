@@ -15,3 +15,5 @@ traitement de l'affichage des données (mise en forme des dates, ...) de la vue 
 CSS => responsive design !
 
 dans main.py, tous les if / else => try /except ?
+
+Show loading asset when importing / deleting / etc...

@@ -17,7 +17,7 @@
           <span class="font-weight-bolder font-italic">#</span>
           <a href="{{ url_for('view', meter_id=meter._id) }}">{{meter.name}}</a>
         </span>
-        <button id="btn-modal" type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal" data-link="{{ url_for('delete_meter', meter_id=meter._id) }}"><span class="font-weight-bolder">X</span></button>
+        <button id="btn-modal-delete-meter" type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal" data-link="{{ url_for('delete_meter', meter_id=meter._id) }}"><span class="font-weight-bolder">X</span></button>
       </li>
       {% endfor %}
       <li class="list-group-item">
@@ -43,17 +43,19 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-        <button type="button" id="confirm-modal" class="btn btn-danger">Yes</a>
+        <a href="#" type="button" id="confirm-modal" class="btn btn-danger">Yes</a>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-  const btn = document.getElementById('btn-modal');
-  btn.onclick = function(e) {
-    const confirm = document.getElementById('confirm-modal');
-    confirm.href = e.target.dataset.link;
-  };
+  $('#deleteModal').on('show.bs.modal', function (e) {
+    document.getElementById('confirm-modal').href = e.relatedTarget.dataset.link;
+  });
+
+  $('#deleteModal').on('hide.bs.modal', function (e) {
+    document.getElementById('confirm-modal').href = '#';
+  });
 </script>
 {% endblock %}

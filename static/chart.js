@@ -22,12 +22,13 @@ function buildChart(ctx, data) {
           xAxes: [{
             type: 'time',
             time: {
-              unit: 'month'
+              unit: 'month',
+              //min: moment().subtract(6, 'month'),
+            },
+            ticks: {
+              min: moment().subtract(6, 'month'),
             },
             distribution: 'linear',
-            //barThickness: 'flex',
-            //barPercentage: 0.9,
-            //categoryPercentage: 1.0
           }],
           yAxes: [{
             ticks: {
@@ -40,9 +41,33 @@ function buildChart(ctx, data) {
               labelString: 'KWh / day'
             }
           }]
+        },
+        plugins: {
+          zoom: {
+            pan: {
+              enabled: true,
+              mode: 'x',
+              // rangeMin: {
+              //   x: 0
+              // },
+              // rangeMax: {
+              //   x: moment()
+              // }
+            }
+          }
         }
       },
   });
+
+  var x = window.matchMedia("screen and (max-width:576px)").matches;
+  if (x === true) {
+    myLineChart.options.responsive = false;
+    myLineChart.options.scales.yAxes[0].scaleLabel.display = false;
+    myLineChart.options.scales.yAxes[0].gridLines.display = false;
+    myLineChart.options.scales.yAxes[0].display = false;
+    myLineChart.options.scales.yAxes[0].ticks.beginAtZero = true;
+    //myLineChart.options.scales.xAxes[0].distribution = 'series';
+  }
 }
 
 function formatForChart(journal) {
