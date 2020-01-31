@@ -3,6 +3,8 @@ from dotenv import load_dotenv
 from urllib.parse import urlencode
 from functools import wraps
 from authlib.integrations.flask_client import OAuth
+import jwt
+import json
 from flask import Flask, request, redirect, url_for, session, jsonify, send_file, render_template, flash, make_response
 from core.models import Meter, Journal, MeterReading
 
@@ -212,3 +214,9 @@ def delete_mr(mr_id):
     except:
         flash('Error, action aborted')
         return redirect(url_for('index'))
+
+
+@app.route('/client')
+@requires_auth
+def client():
+    return json.dumps(session['profile'])
