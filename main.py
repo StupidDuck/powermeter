@@ -110,7 +110,8 @@ def authorize():
         'email': userinfo['name'],
         'all': userinfo,
     }
-    return redirect(url_for('index'))
+    #return redirect(url_for('index'))
+    return redirect(url_for('client'))
 
 
 @app.route('/meter', methods=['POST'])
@@ -250,6 +251,7 @@ def get_auth_token():
     auth = request.headers.get("Authorization", None)
 
     if auth:
-        if auth.split()[0].lower == "bearer":
+        if auth.split()[0].lower() == "bearer":
+            print('AUTH IS OK')
             return auth.split()[1]
     return None
