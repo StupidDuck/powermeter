@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv
 from urllib.parse import urlencode
+from urllib.request import urlopen
 from functools import wraps
 from authlib.integrations.flask_client import OAuth
 import jwt
@@ -28,32 +29,67 @@ auth0 = oauth.register(
 app.secret_key = os.environ['SECRET_KEY']
 
 
+def get_auth_token():
+    auth = request.headers.get("Authorization", None)
+
+    if auth:
+        if auth.split()[0].lower() == "bearer":
+            return auth.split()[1]
+    return None
+    
+
 def requires_auth(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        token = get_auth_token()
-        # if 'profile' not in session:
-        #     return redirect(url_for('login'))
-        if token is None:
-            print('token is none')
-        else:
-            print(token)
-            #return redirect(url_for('login'))
-        # TODO : check if this token is valid (not tempered...)
-        return f(*args, **kwargs)
-
-    return decorated
-
-def requires_scope(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        if 'read:info' in args:
+        # If regular user access...
+        if 'profile' in session:
             return f(*args, **kwargs)
-        else:
-            print('no read:info scope')
-            #return redirect(url_for('login'))
-
+        # If client auth
+        token = get_auth_token()
+        if token is None:
+            return redirect(url_for('login'))
+        unverified_token = jwt.get_unverified_header(token)
+        jwksurl = urlopen('https://asgaror.eu.auth0.com/.well-known/jwks.json')
+        jwks = json.loads(jwksurl.read())
+        
+        public_keys = {}
+        for jwk in jwks['keys']:
+            kid = jwk['kid']
+            public_keys[kid] = jwt.algorithms.RSAAlgorithm.from_jwk(json.dumps(jwk))
+        kid = unverified_token['kid']
+        key = public_keys[kid]
+        
+        if public_keys:
+            try:
+                payload = jwt.decode(token, key=key, algorithms=['RS256'], audience='powermeter-api')
+                #session['tokenjwt_payload'] = payload
+                return f(*args, **kwargs)
+            except:
+                return make_response(jsonify({}), 401)
+        
     return decorated
+
+
+def requires_scopes(scopes):
+    def callable(f):
+        @wraps(f)
+        def decorated(*args, **kwargs):
+            token = get_auth_token()
+            if not token:
+                return f'A token is needed...'
+            claims = jwt.decode(token, verify=False)
+            if claims.get('scope'):
+                token_scopes = claims['scope'].split()
+                for scope in scopes:
+                    if scope not in token_scopes:
+                        return f'Scope : \'{scope}\' needed !'
+            else:
+                return f'Scope : \'{scope}\' needed !'
+
+            return f(*args, **kwargs)
+
+        return decorated
+    return callable
 
 
 @app.route('/')
@@ -104,14 +140,13 @@ def authorize():
     userinfo = resp.json()
 
     # Store the user information in flask session.
-    session['jwt_payload'] = userinfo #does waht ???
+    session['jwt_payload'] = userinfo
     session['profile'] = {
         'id': userinfo['sub'],
         'email': userinfo['name'],
         'all': userinfo,
     }
-    #return redirect(url_for('index'))
-    return redirect(url_for('client'))
+    return redirect(url_for('index'))
 
 
 @app.route('/meter', methods=['POST'])
@@ -238,20 +273,16 @@ def delete_mr(mr_id):
 
 @app.route('/client')
 @requires_auth
-@requires_scope('read:info')
+@requires_scopes(['read:info'])
 def client():
-    return 'Working !'
-
-
-def get_auth_token():
-    print('START dump of header\n')
-    print(request.headers)
-    print('END dump of header\n')
-    
-    auth = request.headers.get("Authorization", None)
-
-    if auth:
-        if auth.split()[0].lower() == "bearer":
-            print('AUTH IS OK')
-            return auth.split()[1]
-    return None
+    return jsonify({
+        'meters': [
+            {
+                'id': 1,
+                'name': 'meter_one'
+            },{
+                'id': 2,
+                'name': 'meter_two'
+            },
+        ]
+    })
