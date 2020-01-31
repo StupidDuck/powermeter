@@ -31,9 +31,27 @@ app.secret_key = os.environ['SECRET_KEY']
 def requires_auth(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        if 'profile' not in session:
-            return redirect(url_for('login'))
+        token = get_auth_token()
+        # if 'profile' not in session:
+        #     return redirect(url_for('login'))
+        if token is None:
+            print('token is none')
+        else:
+            print(token)
+            #return redirect(url_for('login'))
+        # TODO : check if this token is valid (not tempered...)
         return f(*args, **kwargs)
+
+    return decorated
+
+def requires_scope(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if 'read:info' in args:
+            return f(*args, **kwargs)
+        else:
+            print('no read:info scope')
+            #return redirect(url_for('login'))
 
     return decorated
 
@@ -218,6 +236,16 @@ def delete_mr(mr_id):
 
 
 @app.route('/client')
-#@requires_auth
+@requires_auth
+@requires_scope('read:info')
 def client():
-    return json.dumps(session['profile'])
+    return 'Working !'
+
+
+def get_auth_token():
+    auth = request.headers.get("Authorization", None)
+
+    if auth:
+        if auth.split()[0].lower == "bearer":
+            return auth.split()[1]
+    return None
