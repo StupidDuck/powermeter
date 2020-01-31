@@ -243,6 +243,10 @@ def client():
 
 
 def get_auth_token():
+    print('START dump of header\n')
+    print(request.headers)
+    print('END dump of header\n')
+    
     auth = request.headers.get("Authorization", None)
 
     if auth:
