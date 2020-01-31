@@ -57,12 +57,12 @@ def index_api():
 
 @app.route('/login')
 def login():
-    if os.environ['FLASK_ENV'] == 'development':
-        session['profile'] = {
-            'id': 'auth0|6ca2578067456311c2de32be',
-            'email': 'dev@asgaror.space'
-        }
-        return redirect(url_for('index'))
+    # if os.environ['FLASK_ENV'] == 'development':
+    #     session['profile'] = {
+    #         'id': 'auth0|6ca2578067456311c2de32be',
+    #         'email': 'dev@asgaror.space'
+    #     }
+    #     return redirect(url_for('index'))
     return auth0.authorize_redirect(
         redirect_uri="{}{}".format(request.url_root[0:-1], '/authorize'),
         audience='https://asgaror.eu.auth0.com/userinfo')
@@ -71,8 +71,8 @@ def login():
 @app.route('/logout')
 def logout():
     session.clear()
-    if os.environ['FLASK_ENV'] == 'dev':
-        return redirect(url_for('login'))
+    # if os.environ['FLASK_ENV'] == 'dev':
+    #     return redirect(url_for('login'))
     params = {'returnTo': url_for('index', _external=True),
               'client_id': os.environ['AUTH0_CLIENT_ID']}
     return redirect(auth0.api_base_url + '/v2/logout?' + urlencode(params))
@@ -86,10 +86,11 @@ def authorize():
     userinfo = resp.json()
 
     # Store the user information in flask session.
-    session['jwt_payload'] = userinfo
+    session['jwt_payload'] = userinfo #does waht ???
     session['profile'] = {
         'id': userinfo['sub'],
         'email': userinfo['name'],
+        'all': userinfo,
     }
     return redirect(url_for('index'))
 
@@ -217,6 +218,6 @@ def delete_mr(mr_id):
 
 
 @app.route('/client')
-@requires_auth
+#@requires_auth
 def client():
     return json.dumps(session['profile'])
