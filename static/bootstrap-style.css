@@ -4,6 +4,11 @@
   --color-text: #efd6ac;
 }
 
+.x-lower {
+  height: calc(100vh - 56px - 8px - 92px - 200px);
+  max-height: calc(100vh - 56px - 8px - 92px - 200px);
+}
+
 body {
   color: var(--color-primary);
 }
@@ -15,6 +20,13 @@ body {
 .tab-height {
   height: calc(100vh - 56px - 8px - 92px);
   max-height: calc(100vh - 56px - 8px - 92px);
+}
+
+@media (max-width: 576px) {
+  .tab-mobile {
+    height: 50vh;
+    max-height: 50vh;
+  }
 }
 
 .navbar {

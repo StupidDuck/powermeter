@@ -9,6 +9,8 @@ MASTER = heroku stable
 todo : unifier la facon dont le controlleur exporte ces variables : meter_id ou data.meter_id, journal, etc...
 unifier les espaces / tab : 2 / 4 ...
 
+Blueprints pour alléger main.py ?
+
 range des dates a afficher sur le graph (filtre ?)
 traitement de l'affichage des données (mise en forme des dates, ...) de la vue liste
 

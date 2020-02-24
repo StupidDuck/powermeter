@@ -12,11 +12,7 @@
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      {% if meter_name is defined %}}
-      <a class="navbar-brand" href="{{ url_for('index') }}">Back : {{ meter_name }}</a>
-      {% else %}}
       <a class="navbar-brand" href="{{ url_for('index') }}">PowerMeter</a>
-      {% endif %}}
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
