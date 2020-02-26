@@ -3,10 +3,10 @@ from core.models import Meter, Journal
 from .auth import requires_auth
 
 
-api_bp = Blueprint('api', __name__)
+api = Blueprint('api', __name__)
 
 
-@api_bp.route('/api/')
+@api.route('/api/')
 @requires_auth
 def meters():
     _meters = Meter.find(user_id=session['profile']['id'])
@@ -16,7 +16,7 @@ def meters():
      } for meter in _meters])
 
 
-@api_bp.route('/api/meter/<int:meter_id>/journal')
+@api.route('/api/meter/<int:meter_id>/journal')
 @requires_auth
 def journal(meter_id):
     meter = Meter.find(_id=meter_id, user_id=session['profile']['id'])

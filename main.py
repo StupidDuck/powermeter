@@ -1,9 +1,8 @@
 import os
 from dotenv import load_dotenv
 from flask import Flask, request, redirect, url_for, session, jsonify, send_file, render_template, flash, make_response
+from blueprints import api, auth
 from core.models import Meter, Journal, MeterReading
-from blueprints.auth import requires_auth, requires_scopes
-from blueprints import api, auth_bp, api_bp
 
 
 # .env not committed, so does nothing except in dev env
@@ -11,19 +10,19 @@ load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.environ['SECRET_KEY']
-app.register_blueprint(auth_bp)
-app.register_blueprint(api_bp)
+app.register_blueprint(auth.auth)
+app.register_blueprint(api.api)
 
 
 @app.route('/')
-@requires_auth
+@auth.requires_auth
 def index():
     meters = api.meters().get_json()
     return render_template('index.html.j2', meters=meters)
 
 
 @app.route('/meter', methods=['POST'])
-@requires_auth
+@auth.requires_auth
 def meter():
     _name = request.form.get('name')
     try:
@@ -34,7 +33,7 @@ def meter():
 
 
 @app.route('/meter/<int:meter_id>', methods=['POST'])
-@requires_auth
+@auth.requires_auth
 def post_journal(meter_id):
     _meter = Meter.find(_id=meter_id, user_id=session['profile']['id'])
     if _meter is not None:
@@ -51,7 +50,7 @@ def post_journal(meter_id):
 
 
 @app.route('/meter/<int:meter_id>/delete')
-@requires_auth
+@auth.requires_auth
 def delete_meter(meter_id):
     try:
         _meter = Meter.find(_id=meter_id, user_id=session['profile']['id'])
@@ -63,7 +62,7 @@ def delete_meter(meter_id):
 
 
 @app.route('/meter/<int:meter_id>/view')
-@requires_auth
+@auth.requires_auth
 def view(meter_id):
     resp = api.journal(meter_id)
     if resp.status_code != 200:
@@ -73,7 +72,7 @@ def view(meter_id):
 
 
 @app.route('/meter/<int:meter_id>/journal/export')
-@requires_auth
+@auth.requires_auth
 def export_csv(meter_id):
     _meter = Meter.find(_id=meter_id, user_id=session['profile']['id'])
     if _meter is None:
@@ -88,7 +87,7 @@ def export_csv(meter_id):
 
 
 @app.route('/meter/<int:meter_id>/journal/import', methods=['POST'])
-@requires_auth
+@auth.requires_auth
 def import_csv(meter_id):
     if 'file' not in request.files:
         flash('No file selected')
@@ -107,7 +106,7 @@ def import_csv(meter_id):
 
 
 @app.route('/mr/<int:mr_id>/delete')
-@requires_auth
+@auth.requires_auth
 def delete_mr(mr_id):
     try:
         mr = MeterReading.find(_id=mr_id, user_id=session['profile']['id'])
@@ -119,8 +118,8 @@ def delete_mr(mr_id):
 
 
 @app.route('/client')
-@requires_auth
-@requires_scopes(['read:info'])
+@auth.requires_auth
+@auth.requires_scopes(['read:info'])
 def client():
     return jsonify({
         'meters': [

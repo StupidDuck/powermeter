@@ -8,7 +8,7 @@ from flask import Blueprint, request, redirect, session, url_for, make_response,
 from authlib.integrations.flask_client import OAuth
 
 
-auth_bp = Blueprint('auth', __name__)
+auth = Blueprint('auth', __name__)
 oauth = OAuth(current_app)
 auth0 = oauth.register(
     'auth0',
@@ -23,7 +23,7 @@ auth0 = oauth.register(
 )
 
 
-@auth_bp.route('/login')
+@auth.route('/login')
 def login():
     # if os.environ['FLASK_ENV'] == 'development':
     #     session['profile'] = {
@@ -36,7 +36,7 @@ def login():
         audience='https://asgaror.eu.auth0.com/userinfo')
 
 
-@auth_bp.route('/logout')
+@auth.route('/logout')
 def logout():
     session.clear()
     # if os.environ['FLASK_ENV'] == 'dev':
@@ -46,7 +46,7 @@ def logout():
     return redirect(auth0.api_base_url + '/v2/logout?' + urlencode(params))
 
 
-@auth_bp.route('/authorize')
+@auth.route('/authorize')
 def authorize():
     # Handles response from token endpoint
     auth0.authorize_access_token()
