@@ -1,4 +1,3 @@
-from datetime import datetime
 import core.models
 from core.data_access import journal_dao
 from core.data_access import meter_reading_dao
@@ -7,7 +6,7 @@ from core.data_access import meter_reading_dao
 class Journal:
 
     def __init__(self, meter_id):
-        self.meter_id = meter_id
+        self._meter_id = meter_id
         self._mrs = journal_dao.find_all(meter_id)
 
         for idx, val in enumerate(self._mrs):
@@ -36,6 +35,14 @@ class Journal:
         while i < stop:
             yield self._mrs[i]
             i += 1
+
+    @property
+    def meter_id(self):
+        return self._meter_id
+
+    @property
+    def mrs(self):
+        return self._mrs
 
     @property
     def mean(self):
@@ -85,5 +92,5 @@ class Journal:
             line_list = line.split(',')
             value = line_list[1]
             date = line_list[0]
-            meter_reading_dao.insert(core.models.MeterReading(date, value, self.meter_id))
+            meter_reading_dao.insert(core.models.MeterReading(date, value, self._meter_id))
             line = file.readline().decode("utf-8")

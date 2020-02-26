@@ -4,17 +4,21 @@ from core.data_access import meter_dao
 
 class Meter:
 
-    def __init__(self, user_id, name, id=None):
-        self._id = id
+    def __init__(self, user_id, name, _id=None):
+        self._id = _id
         self.user_id = user_id
         self.name = name
 
+    @property
+    def id(self):
+        return self._id
+
     @staticmethod
     def find(**kwargs):
-        if 'id' in kwargs:
-            return meter_dao.find(kwargs['user_id'], kwargs['id'])
+        if '_id' in kwargs:
+            return meter_dao.find(kwargs['user_id'], kwargs['_id'])
         else:
-            return meter_dao.find(kwargs['user_id'], id=None)
+            return meter_dao.find(kwargs['user_id'])
 
     def save(self):
         self._id = meter_dao.insert(self)

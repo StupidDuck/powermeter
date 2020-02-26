@@ -1,6 +1,8 @@
 .vscode
 .env
 .venv/
+.idea/
 __pycache__/
 *.py[cod]
 *.csv
+*.kdev4

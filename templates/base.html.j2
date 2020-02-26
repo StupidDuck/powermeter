@@ -23,7 +23,7 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <span class="navbar-text ml-auto">
           {% if 'profile' in session %}
-            {{ session['profile']['email'] }} (<a href="{{ url_for('logout') }}">logout</a>)
+            {{ session['profile']['email'] }} (<a href="{{ url_for('auth.logout') }}">logout</a>)
           {% else %}
             <a class="nav-link" href="{{ url_for('login') }}">Login</a>
           {% endif %}

@@ -15,9 +15,9 @@
       <li class="list-group-item d-flex justify-content-between">
         <span>
           <span class="font-weight-bolder font-italic">#</span>
-          <a href="{{ url_for('view', meter_id=meter._id) }}">{{meter.name}}</a>
+          <a href="{{ url_for('view', meter_id=meter.id) }}">{{meter.name}}</a>
         </span>
-        <button id="btn-modal-delete-meter" type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal" data-link="{{ url_for('delete_meter', meter_id=meter._id) }}"><span class="font-weight-bolder">X</span></button>
+        <button id="btn-modal-delete-meter" type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal" data-link="{{ url_for('delete_meter', meter_id=meter.id) }}"><span class="font-weight-bolder">X</span></button>
       </li>
       {% endfor %}
       <li class="list-group-item">
