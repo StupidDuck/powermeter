@@ -1,7 +1,7 @@
-from core.data_access import meter_reading_dao
+from core.data_access import index_dao
 
 
-class MeterReading:
+class Index:
 
     def __init__(self, date, value, meter_id, _id=None):
         self._id = _id
@@ -23,15 +23,12 @@ class MeterReading:
 
         return float("{0:.2f}".format(mean))
 
-    @staticmethod
-    def find(**kwargs):
-        if '_id' in kwargs:
-            return meter_reading_dao.find(kwargs['user_id'], kwargs['_id'])
-        else:
-            return meter_reading_dao.find(kwargs['user_id'])
-
     def save(self):
-        self._id = meter_reading_dao.insert(self)
+        self._id = index_dao.insert(self)
 
     def delete(self):
-        meter_reading_dao.delete(self)
+        return index_dao.delete(self)
+
+    @staticmethod
+    def find(user_id, meter_id):
+        return index_dao.find(user_id, meter_id)

@@ -11,18 +11,18 @@
       <li class="list-group-item">
         <h4>Meter list</h4>
       </li>
-      {% for meter in meters %}
+      {% for meter in model %}
       <li class="list-group-item d-flex justify-content-between">
         <span>
           <span class="font-weight-bolder font-italic">#</span>
-          <a href="{{ url_for('view', meter_id=meter.id) }}">{{meter.name}}</a>
+          <a href="{{ url_for('view.meter', meter_id=meter.id) }}">{{meter.name}}</a>
         </span>
-        <button id="btn-modal-delete-meter" type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal" data-link="{{ url_for('delete_meter', meter_id=meter.id) }}"><span class="font-weight-bolder">X</span></button>
+        <button id="btn-modal-delete-meter" type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal" data-id="{{ meter.id }}"><span class="font-weight-bolder">X</span></button>
       </li>
       {% endfor %}
       <li class="list-group-item">
         <h4>Add a new meter</h4>
-        <form class="form d-flex justify-content-between" action="{{ url_for('meter') }}" method="POST">
+        <form class="form d-flex justify-content-between" action="{{ url_for('view.add_meter') }}" method="POST">
           <input class="form-control" id="name" name="name" type="text" placeholder="Meter name">
           <button class="btn btn-primary btn-sm" type="submit">Create</button>
         </form>
@@ -43,7 +43,10 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-        <a href="#" type="button" id="confirm-modal" class="btn btn-danger">Yes</a>
+        <form action="{{ url_for('view.delete_meter') }}" method="POST">
+          <input type="hidden" id="meter-id" name="meter-id" value="">
+          <button type="submit" id="confirm-modal" class="btn btn-danger">Yes</button>
+        </form>
       </div>
     </div>
   </div>
@@ -51,11 +54,11 @@
 
 <script>
   $('#deleteModal').on('show.bs.modal', function (e) {
-    document.getElementById('confirm-modal').href = e.relatedTarget.dataset.link;
+    document.getElementById('meter-id').value = e.relatedTarget.dataset.id;
   });
 
   $('#deleteModal').on('hide.bs.modal', function (e) {
-    document.getElementById('confirm-modal').href = '#';
+    document.getElementById('meter-id').value = '';
   });
 </script>
 {% endblock %}

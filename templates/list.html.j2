@@ -8,12 +8,17 @@
     </tr>
   </thead>
   <tbody>
-    {% for reading in journal.entries|reverse %}
+    {% for index in model.entries|reverse %}
         <tr>
-          <td>{{ reading.mean_consumption_per_day }}</td>
-          <td>{{ reading.date }}</td>
-          <td>{{ reading.value }}</td>
-          <td><a class="btn btn-sm btn-danger" href="{{ url_for('delete_mr', mr_id=reading.id) }}">X</a></td>
+          <td>{{ index.mean_consumption_per_day }}</td>
+          <td>{{ index.date }}</td>
+          <td>{{ index.value }}</td>
+          <td>
+            <form action="{{ url_for('view.delete_index', meter_id=model.meter_id) }}" method="POST">
+              <input type="hidden" name="index-id" value="{{ index.id }}">
+              <button type="submit" class="btn btn-sm btn-danger">X</button>
+            </form>
+          </td>
         </tr>
     {% endfor %}
   </tbody>

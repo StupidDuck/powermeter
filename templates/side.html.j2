@@ -1,13 +1,14 @@
 <div class="d-flex flex-column h-100">
 <div class="d-flex flex-column justify-content-between flex-grow-1">
     <ul class="list-group mt-5">
-        <li class="list-group-item d-flex justify-content-between">Mean<span><strong>{{ journal.mean }} KWh</strong></span></li>
-        <li class="list-group-item d-flex justify-content-between">Annual projection<span><strong>{{ journal.mean * 365 }} KWh</strong></span></li>
-        <li class="list-group-item d-flex justify-content-between">Trend of the last {{ journal.days }} days<span><strong>{{ journal.trend_last_days }}</strong></span></li>
+        <li class="list-group-item d-flex justify-content-between active">Stats for this meter</li>
+        <li class="list-group-item d-flex justify-content-between">Mean<span><strong>{{ model.mean }} KWh</strong></span></li>
+        <li class="list-group-item d-flex justify-content-between">Annual projection<span><strong>{{ model.mean * 365 }} KWh</strong></span></li>
+        <li class="list-group-item d-flex justify-content-between">Trend of the last {{ model.days }} days<span><strong>{{ model.trend_last_days }}</strong></span></li>
     </ul>
     <ul class="list-group" style="margin-bottom: 8px">
         <li class="list-group-item">
-            <form action="{{ url_for('post_journal', meter_id=meter_id) }}" method="POST">
+            <form action="{{ url_for('view.add_index', meter_id=model.meter_id) }}" method="POST">
                 <div class="form-row">
                     <div class="col-9">
                     <input class="form-control form-control-sm" id="date" name="date" type="date" placeholder="Date">
@@ -34,7 +35,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <form id="confirm-modal-csv" action="{{ url_for('import_csv', meter_id=meter_id) }}" enctype="multipart/form-data" method="POST">
+                    <form id="confirm-modal-csv" action="#" enctype="multipart/form-data" method="POST">
                       <input name="file" type="file" accept="text/csv">
                       <input class="btn btn-primary" type="submit" value="Import file">
                     </form>

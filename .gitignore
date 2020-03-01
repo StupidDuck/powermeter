@@ -6,3 +6,4 @@ __pycache__/
 *.py[cod]
 *.csv
 *.kdev4
+db_sqlite.db

@@ -25,12 +25,6 @@ auth0 = oauth.register(
 
 @auth.route('/login')
 def login():
-    # if os.environ['FLASK_ENV'] == 'development':
-    #     session['profile'] = {
-    #         'id': 'auth0|6ca2578067456311c2de32be',
-    #         'email': 'dev@asgaror.space'
-    #     }
-    #     return redirect(url_for('index'))
     return auth0.authorize_redirect(
         redirect_uri="{}{}".format(request.url_root[0:-1], '/authorize'),
         audience='https://asgaror.eu.auth0.com/userinfo')
@@ -39,8 +33,6 @@ def login():
 @auth.route('/logout')
 def logout():
     session.clear()
-    # if os.environ['FLASK_ENV'] == 'dev':
-    #     return redirect(url_for('login'))
     params = {'returnTo': url_for('index', _external=True),
               'client_id': os.environ['AUTH0_CLIENT_ID']}
     return redirect(auth0.api_base_url + '/v2/logout?' + urlencode(params))
@@ -65,7 +57,6 @@ def authorize():
 
 def get_auth_token():
     auth_header = request.headers.get("Authorization", None)
-
     if auth_header:
         if auth_header.split()[0].lower() == "bearer":
             return auth_header.split()[1]
@@ -77,9 +68,10 @@ def requires_auth(f):
     def decorated(*args, **kwargs):
         # If regular user access...
         if 'profile' in session:
-            return f(*args, **kwargs)
+            return f(*args, uid=session['profile']['id'], **kwargs)
         # If client auth
         token = get_auth_token()
+        #marche pas ici...
         if token is None:
             return redirect(url_for('auth.login'))
         unverified_token = jwt.get_unverified_header(token)
@@ -96,8 +88,8 @@ def requires_auth(f):
         if public_keys:
             try:
                 payload = jwt.decode(token, key=key, algorithms=['RS256'], audience='powermeter-api')
-                # session['tokenjwt_payload'] = payload
-                return f(*args, **kwargs)
+                session['profile']['token'] = payload
+                return f(*args, uid=payload, **kwargs)
             except:
                 return make_response(jsonify({}), 401)
 
@@ -109,16 +101,21 @@ def requires_scopes(scopes):
         @wraps(f)
         def decorated(*args, **kwargs):
             token = get_auth_token()
-            if not token:
+            if token is not None:
+                claims = jwt.decode(token, verify=False)
+            elif session.get('jwt_payload') is not None:
+                claims = session['jwt_payload'].get('scope')
+            else:
                 return f'A token is needed...'
-            claims = jwt.decode(token, verify=False)
-            if claims.get('scope'):
+
+            if claims is not None:
                 token_scopes = claims['scope'].split()
                 for scope in scopes:
                     if scope not in token_scopes:
                         return f'Scope : \'{scope}\' needed !'
             else:
-                return f'A scope is needed !'
+                return f'A scope is needed...'
+
             return f(*args, **kwargs)
         return decorated
     return call

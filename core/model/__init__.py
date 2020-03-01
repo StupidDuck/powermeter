@@ -1,3 +1,3 @@
 from .Meter import Meter
 from .Journal import Journal
-from .MeterReading import MeterReading
+from .Index import Index
