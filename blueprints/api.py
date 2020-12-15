@@ -84,22 +84,21 @@ def export_journal(uid, meter_id):
         return make_response(jsonify({}), 404)
 
 
+@api.route('/api/meter/<int:meter_id>/journal/import', methods=['POST'])
+@requires_auth
 def import_journal(uid, meter_id):
-    pass
-# @app.route('/meter/<int:meter_id>/journal/import', methods=['POST'])
-# @auth.requires_auth
-# def import_csv(meter_id):
-#     if 'file' not in request.files:
-#         flash('No file selected')
-#         return redirect(url_for('view', meter_id=meter_id))
-#     file = request.files['file']
-#     if file.filename == '':
-#         flash('No file selected')
-#         return redirect(url_for('view', meter_id=meter_id))
-#     _meter = Meter.find(_id=meter_id, user_id=session['profile']['id'])
-#     if _meter is not None:
-#         journal_obj = Journal(meter.id)
-#         journal_obj.import_csv(file)
-#     else:
-#         flash('Not allowed to do this !')
-#     return redirect(url_for('view', meter_id=meter_id))
+    try:
+        if 'file' not in request.files:
+            return make_response(jsonify({}), 400)
+        file = request.files['file']
+        if file.filename == '':
+            return make_response(jsonify({}), 400)
+        _journal = JournalViewModel(user_id=uid, meter_id=meter_id)
+        if _journal is not None:
+            _journal.import_csv(file)
+        else:
+            return make_response(jsonify({}), 404)
+    except:
+        return make_response(jsonify({}), 500)
+
+    return make_response(jsonify({}), 200)

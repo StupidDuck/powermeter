@@ -35,8 +35,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <form id="confirm-modal-csv" action="#" enctype="multipart/form-data" method="POST">
-                      <input name="file" type="file" accept="text/csv">
+                    <form id="confirm-modal-csv">
+                      <input id="file" name="file" type="file" accept="text/csv">
                       <input class="btn btn-primary" type="submit" value="Import file">
                     </form>
                 </div>
@@ -48,6 +48,23 @@
 </div>
 </div>
 <script>
+  // Set date to today
   document.getElementById('date').valueAsDate = new Date();
   document.getElementById('value').focus();
+
+  // Handle POST of the csv file
+  document.getElementById('confirm-modal-csv').addEventListener('submit', postCSV);
+  function postCSV(event) {
+    event.preventDefault();
+    const formData = new FormData();
+    const file = document.getElementById('file');
+    formData.append('file', file.files[0]);
+
+    fetch("{{ url_for('api.import_journal', meter_id=model.meter_id) }}", {
+        method: 'POST',
+        body: formData
+    }).then((res) => res.json())
+    .then((data) => $("#importModal").modal("hide"))
+    .catch((err)=>console.log(err))
+  }
 </script>

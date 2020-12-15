@@ -1,4 +1,4 @@
-from .db_sqlite import get_cursor
+from .db import get_cursor
 
 with get_cursor() as c:
     c.execute("""CREATE TABLE IF NOT EXISTS meters (

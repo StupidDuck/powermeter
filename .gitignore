@@ -1,6 +1,7 @@
 .vscode
 .env
 .venv/
+venv/
 .idea/
 __pycache__/
 *.py[cod]

@@ -11,7 +11,7 @@
     "sizes": "512x512",
     "type": "image/png"
   }],
-  "start_url": "https://powermeter-dev.herokuapp.com/",
+  "start_url": "https://powermeter.herokuapp.com/",
   "display": "standalone",
   "background_color": "#FFFFFF",
   "theme_color": "#00131F"

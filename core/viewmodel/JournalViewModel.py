@@ -42,11 +42,12 @@ class JournalViewModel:
                 file.write("{},{}\n".format(mr.date, mr.value))
         return path
 
-    # def import_csv(self, file):
-    #     line = file.readline().decode("utf-8")
-    #     while line:
-    #         line_list = line.split(',')
-    #         value = line_list[1]
-    #         date = line_list[0]
-    #         meter_reading_dao.insert(core.model.MeterReading(date, value, self._meter_id))
-    #         line = file.readline().decode("utf-8")
+    def import_csv(self, file):
+        line = file.readline().decode("utf-8")
+        while line:
+            line_list = line.split(',')
+            date = line_list[0]
+            value = line_list[1].strip('\n')
+            # meter_reading_dao.insert(core.model.MeterReading(date, value, self._meter_id))
+            self.save_index(value, date)
+            line = file.readline().decode("utf-8")

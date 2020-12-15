@@ -25,6 +25,12 @@ auth0 = oauth.register(
 
 @auth.route('/login')
 def login():
+    if os.environ['FLASK_ENV'] == 'development':
+        session['profile'] = {
+            'id': 'auth0|6ca2578067456311c2de32be',
+            'email': 'dev@asgaror.space'
+        }
+        return redirect(url_for('view.index'))
     return auth0.authorize_redirect(
         redirect_uri="{}{}".format(request.url_root[0:-1], '/authorize'),
         audience='https://asgaror.eu.auth0.com/userinfo')
@@ -33,6 +39,8 @@ def login():
 @auth.route('/logout')
 def logout():
     session.clear()
+    if os.environ['FLASK_ENV'] == 'development':
+        return redirect(url_for('view.login'))
     params = {'returnTo': url_for('index', _external=True),
               'client_id': os.environ['AUTH0_CLIENT_ID']}
     return redirect(auth0.api_base_url + '/v2/logout?' + urlencode(params))

@@ -1,5 +1,5 @@
 import core.model
-from core.data_access.db_sqlite import get_cursor as get_db
+from core.data_access.db import get_cursor as get_db
 
 
 def find(user_id):
