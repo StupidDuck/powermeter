@@ -41,7 +41,7 @@ def logout():
     session.clear()
     if os.environ['FLASK_ENV'] == 'development':
         return redirect(url_for('view.login'))
-    params = {'returnTo': url_for('index', _external=True),
+    params = {'returnTo': url_for('view.index', _external=True),
               'client_id': os.environ['AUTH0_CLIENT_ID']}
     return redirect(auth0.api_base_url + '/v2/logout?' + urlencode(params))
 
@@ -60,7 +60,7 @@ def authorize():
         'email': userinfo['name'],
         'all': userinfo,
     }
-    return redirect(url_for('index'))
+    return redirect(url_for('view.index'))
 
 
 def get_auth_token():
