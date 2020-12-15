@@ -6,7 +6,7 @@ def find(user_id):
     with get_db() as db:
         db.execute("""
             SELECT user_id, name, id FROM meters
-            WHERE user_id = ?;""", (user_id,))
+            WHERE user_id = %s;""", (user_id,))
         records = db.fetchall()
         if records is None:
             return None
@@ -15,7 +15,7 @@ def find(user_id):
 
 def insert(meter):
     with get_db() as db:
-        db.execute("INSERT INTO meters (user_id, name) VALUES (?, ?);",
+        db.execute("INSERT INTO meters (user_id, name) VALUES (%s, %s);",
                    (meter.user_id, meter.name))
         db.execute("SELECT last_insert_rowid();")
         if record := db.fetchone():
@@ -25,5 +25,5 @@ def insert(meter):
 
 def delete(meter):
     with get_db() as db:
-        db.execute("DELETE FROM meters WHERE id = ?;", (meter.id,))
+        db.execute("DELETE FROM meters WHERE id = %s;", (meter.id,))
         return meter.id

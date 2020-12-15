@@ -16,3 +16,6 @@ CSS => responsive design !
 Show loading asset when importing / deleting / etc...
 
 script de backup automatique / cron...
+
+? == sqlite
+%s == postgresql

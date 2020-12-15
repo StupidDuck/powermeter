@@ -7,7 +7,7 @@ def find(user_id, meter_id):
         db.execute("""
             SELECT indexes.date, indexes.value, indexes.meter_id, indexes.id
             FROM indexes INNER JOIN meters ON indexes.meter_id = meters.id
-            WHERE meters.user_id = ? AND indexes.meter_id = ?;""", (user_id, meter_id))
+            WHERE meters.user_id = %s AND indexes.meter_id = %s;""", (user_id, meter_id))
         records = db.fetchall()
         if records is None:
             return None
@@ -16,7 +16,7 @@ def find(user_id, meter_id):
 
 def insert(meter_reading):
     with get_db() as db:
-        db.execute("INSERT INTO indexes (date, value, meter_id) VALUES (?, ?, ?);",
+        db.execute("INSERT INTO indexes (date, value, meter_id) VALUES (%s, %s, %s);",
                    (meter_reading.date, meter_reading.value, meter_reading.meter_id))
         db.execute("SELECT last_insert_rowid();")
         if record := db.fetchone():
@@ -26,5 +26,5 @@ def insert(meter_reading):
 
 def delete(meter_reading):
     with get_db() as db:
-        db.execute("DELETE FROM indexes WHERE id = ?;", (meter_reading.id,))
+        db.execute("DELETE FROM indexes WHERE id = %s;", (meter_reading.id,))
         return meter_reading.id
