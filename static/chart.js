@@ -1,4 +1,5 @@
 function buildChart(ctx, data) {
+  console.log(data);
   var myLineChart = new Chart(ctx, {
       type: 'bar',
       data: {

@@ -1,6 +1,3 @@
-from datetime import date
-
-
 class Journal:
 
     def __init__(self, indexes):
@@ -11,7 +8,8 @@ class Journal:
         for idx, val in enumerate(self._indexes):
             if idx > 0:
                 val.consumption = val.value - prev_value
-                val.days = (date.fromisoformat(val.date) - prev_date).days
+                # val.days = (date.fromisoformat(val.date) - prev_date).days
+                val.days = (val.date - prev_date).days
                 val.prev_date = prev_date
                 val.prev_value = prev_value
             else:
@@ -20,7 +18,8 @@ class Journal:
                 val.prev_date = None
                 val.prev_value = 0
             prev_value = val.value
-            prev_date = date.fromisoformat(val.date)
+            # prev_date = date.fromisoformat(val.date)
+            prev_date = val.date
 
     def __len__(self):
         return len(self._indexes)
