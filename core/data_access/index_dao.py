@@ -16,9 +16,9 @@ def find(user_id, meter_id):
 
 def insert(meter_reading):
     with get_db() as db:
-        db.execute("INSERT INTO indexes (date, value, meter_id) VALUES (%s, %s, %s);",
+        db.execute("INSERT INTO indexes (date, value, meter_id) VALUES (%s, %s, %s) RETURNING id;",
                    (meter_reading.date, meter_reading.value, meter_reading.meter_id))
-        db.execute("SELECT last_insert_rowid();")
+        # db.execute("SELECT last_insert_rowid();")
         if record := db.fetchone():
             return record[0]
         return None

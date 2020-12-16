@@ -1,3 +1,5 @@
+from datetime import date, timedelta
+
 class Journal:
 
     def __init__(self, indexes):
@@ -8,7 +10,6 @@ class Journal:
         for idx, val in enumerate(self._indexes):
             if idx > 0:
                 val.consumption = val.value - prev_value
-                # val.days = (date.fromisoformat(val.date) - prev_date).days
                 val.days = (val.date - prev_date).days
                 val.prev_date = prev_date
                 val.prev_value = prev_value
@@ -18,7 +19,6 @@ class Journal:
                 val.prev_date = None
                 val.prev_value = 0
             prev_value = val.value
-            # prev_date = date.fromisoformat(val.date)
             prev_date = val.date
 
     def __len__(self):
@@ -35,9 +35,10 @@ class Journal:
             i += 1
 
     @property
-    def mean(self):
+    def mean(self, period_in_days=365):
         try:
-            mean = sum([mr.mean_consumption_per_day for mr in self._indexes[1:]]) / (len(self._indexes) - 1)
+            indexes = [mr for mr in self._indexes[1:] if mr.date >= (date.today() - timedelta(days=period_in_days))]
+            mean = sum([mr.consumption for mr in indexes]) / sum([mr.days for mr in indexes])
             return float("{0:.2f}".format(mean))
         except ZeroDivisionError:
             return float("0.00")

@@ -17,5 +17,5 @@ Show loading asset when importing / deleting / etc...
 
 script de backup automatique / cron...
 
-? == sqlite
-%s == postgresql
+bulk insert on import
+refresh (to reload js => data) after import

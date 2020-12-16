@@ -1,5 +1,4 @@
 function buildChart(ctx, data) {
-  console.log(data);
   var myLineChart = new Chart(ctx, {
       type: 'bar',
       data: {
@@ -23,11 +22,15 @@ function buildChart(ctx, data) {
           xAxes: [{
             type: 'time',
             time: {
-              unit: 'month',
+              //unit: 'month',
+              unit: 'year',
               //min: moment().subtract(6, 'month'),
             },
             ticks: {
-              min: moment().subtract(6, 'month'),
+              //min: moment().subtract(6, 'month'),
+              //min: moment().subtract(4, 'year'),
+              min: Math.min(...data.values.map(x => x.label)),
+              max: Math.max(...data.values.map(x => x.label))
             },
             distribution: 'linear',
           }],
@@ -100,6 +103,54 @@ function formatForChart(journal) {
       reject(console.log("Something bad happened..."));
     }
   });
+}
+
+function groupByYear(journal) {
+    return new Promise((resolve, reject) => {
+        try {
+            journal.entries = journal.entries.map((entry) => new Object({
+                'year': new Date(Date.parse(entry.date)).getFullYear(),
+                'id': entry.id,
+                'mean_consumption_per_day': entry.mean_consumption_per_day,
+                'value': entry.value,
+                'duration': entry.duration
+            }));
+
+            const key = 'year';
+            const reduced = journal.entries.reduce((result, item) => ({
+                ...result,
+                [item[key]]: [
+                  ...(result[item[key]] || []),
+                  item,
+                ],
+            }), {});
+
+            const summed = Object.values(reduced).map((val, idx) => {
+                const consumption = val.reduce((sum, index) => {
+                    return sum + index.duration * index.mean_consumption_per_day
+                }, 0);
+                const days = val.reduce((sum, index) => {
+                    return sum + index.duration
+                }, 0);
+                return new Object({
+                    'label': `${val[0].year}-01-01`,
+                    'value': (consumption / days).toFixed(2)
+                });
+            });
+
+            let y_max = Math.max(...summed.map(x => x.value));
+            y_max = y_max + y_max / 5;
+
+            resolve(new Object({
+                'values': summed,
+                'y_min': 0,
+                'y_max': y_max
+            }));
+        }
+        catch {
+            reject(console.log("Something bad happened in groupByYear..."));
+        }
+    });
 }
 
 function palette(i) {

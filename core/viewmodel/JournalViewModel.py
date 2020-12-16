@@ -16,7 +16,8 @@ class JournalViewModel:
                 'id': index.id,
                 'date': index.date,
                 'value': index.value,
-                'mean_consumption_per_day': index.mean_consumption_per_day
+                'mean_consumption_per_day': index.mean_consumption_per_day,
+                'duration': index.days
             } for index in self._journal],
             'mean': self._journal.mean,
             'days': days,
