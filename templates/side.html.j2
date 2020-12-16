@@ -2,7 +2,7 @@
 <div class="d-flex flex-column justify-content-between flex-grow-1">
     <ul class="list-group mt-5">
         <li class="list-group-item d-flex justify-content-between active">Stats for this meter</li>
-        <li class="list-group-item d-flex justify-content-between">Mean<span><strong>{{ model.mean }} KWh</strong></span></li>
+        <li class="list-group-item d-flex justify-content-between">Mean (1 year)<span><strong>{{ model.mean }} KWh</strong></span></li>
         <li class="list-group-item d-flex justify-content-between">Annual projection<span><strong>{{ "{0:.2f}".format(model.mean * 365) }} KWh</strong></span></li>
         <li class="list-group-item d-flex justify-content-between">Trend of the last {{ model.days }} days<span><strong>{{ model.trend_last_days }}</strong></span></li>
     </ul>

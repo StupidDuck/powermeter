@@ -72,6 +72,8 @@ function buildChart(ctx, data) {
     myLineChart.options.scales.yAxes[0].ticks.beginAtZero = true;
     //myLineChart.options.scales.xAxes[0].distribution = 'series';
   }
+
+  return myLineChart;
 }
 
 function formatForChart(journal) {
@@ -108,7 +110,7 @@ function formatForChart(journal) {
 function groupByYear(journal) {
     return new Promise((resolve, reject) => {
         try {
-            journal.entries = journal.entries.map((entry) => new Object({
+            const entries = journal.entries.map((entry) => new Object({
                 'year': new Date(Date.parse(entry.date)).getFullYear(),
                 'id': entry.id,
                 'mean_consumption_per_day': entry.mean_consumption_per_day,
@@ -117,7 +119,7 @@ function groupByYear(journal) {
             }));
 
             const key = 'year';
-            const reduced = journal.entries.reduce((result, item) => ({
+            const reduced = entries.reduce((result, item) => ({
                 ...result,
                 [item[key]]: [
                   ...(result[item[key]] || []),
